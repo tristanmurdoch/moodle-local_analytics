@@ -26,7 +26,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
  
-function analytics_trackurl() {
+function local_analytics_trackurl() {
     global $DB, $PAGE, $COURSE, $SITE;
     $pageinfo = get_context_info_array($PAGE->context->id);
     $trackurl = "'";
@@ -81,7 +81,7 @@ function insert_analytics_tracking() {
 		}
 		
 		if ($cleanurl) {
-			$doctitle = "_paq.push(['setDocumentTitle', ".analytics_trackurl()."]);";
+			$doctitle = "_paq.push(['setDocumentTitle', ".local_analytics_trackurl()."]);";
 		} else {
 			$doctitle = "";
 		}
@@ -110,5 +110,5 @@ function insert_analytics_tracking() {
 insert_analytics_tracking();
 
 if (debugging() && ($CFG->debugdisplay)) {
-    $CFG->additionalhtmlfooter .= "<span class='badge badge-success'>Tracking: ".analytics_trackurl()."</span>";
+    $CFG->additionalhtmlfooter .= "<span class='badge badge-success'>Tracking: ".local_analytics_trackurl()."</span>";
 }
