@@ -108,7 +108,3 @@ function insert_local_analytics_tracking() {
 }
 
 insert_local_analytics_tracking();
-
-if (debugging() && ($CFG->debugdisplay)) {
-    $CFG->additionalhtmlfooter .= "<span class='badge badge-success'>Tracking: ".local_analytics_trackurl()."</span>";
-}

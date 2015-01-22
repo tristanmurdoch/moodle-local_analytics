@@ -1,6 +1,13 @@
 moodle-local_analytics
 ==================
 
+Release notes:
+
+version: 2015012200
+
+- Removed the debugging URL display on the page, If debugging is required use your browsers view source feature.
+
+
 A local Moodle Module adding Site Analytics
 
 The plugin features the following options:
