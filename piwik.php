@@ -62,6 +62,49 @@ function local_analytics_trackurl() {
     $trackurl .= "'";
     return $trackurl;
 }
+
+/**
+ * see http://piwik.org/blog/2012/10/using-custom-variables-in-piwik-tutorial/
+ *
+ * There can be up to 5 Custom Variables in the piwik callback.
+ *  These are dynamically defined
+
+ * Note, in the future this will be replaced with 'Custom Dimensions'
+ *  - http://piwik.org/docs/custom-variables/
+ *    https://piwik.org/faq/general/faq_21117/
+ **/
+
+function local_insert_custom_moodle_vars() {
+    global $DB, $PAGE, $COURSE, $SITE;
+    $customvars="";
+
+    // Option is visit/page
+    // see http://piwik.org/docs/custom-variables/
+    $scope = 'page';
+
+    //User Details
+    // "John Smith ([user_id])"
+    $customvars.='piwikTracker.setCustomVariable(1, "UserName", "'.("").'", '.$scope.');';
+    $customvars.='piwikTracker.trackPageView();'; #NOTE: I'm not sure if you have do this every time.
+
+    //User Role
+    $customvars.='piwikTracker.setCustomVariable(2, "UserRole", "'.("").'", '.$scope.');';
+    $customvars.='piwikTracker.trackPageView();';
+
+    //Context Type: i.e. page , course, activity ?
+    $customvars.='piwikTracker.setCustomVariable(3, "Context", "'.("").'", '.$scope.');';
+    $customvars.='piwikTracker.trackPageView();';
+
+    //Course Name
+    // "Mathematics for Accountants ([course_id])"
+    $customvars.='piwikTracker.setCustomVariable(4, "CourseName", "'.("").'", '.$scope.');';
+    $customvars.='piwikTracker.trackPageView();';
+
+    //Max 5 Variables
+
+    return $customvars;
+
+}
  
 function insert_local_analytics_tracking() {
     global $CFG;
@@ -97,8 +140,8 @@ function insert_local_analytics_tracking() {
     (function() {
       var u='//".$siteurl."/';
       _paq.push(['setTrackerUrl', u+'piwik.php']);
-      _paq.push(['setSiteId', ".$siteid."]);
-      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      _paq.push(['setSiteId', ".$siteid."]);".local_insert_custom_moodle_vars().
+      "var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
     g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
     })();
 </script>".$addition.
