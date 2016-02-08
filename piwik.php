@@ -58,9 +58,38 @@ function local_analytics_trackurl() {
     if (isset($pageinfo[2]->name)) {
         $trackurl .= $pageinfo[2]->modname.'/'.$pageinfo[2]->name;
     }
-    
+
     $trackurl .= "'";
     return $trackurl;
+}
+
+/**
+ * Build a custom variable string.
+ *
+ * @param integer $index
+ *   The custom variable index number (1 through 5).
+ *
+ * @param string $name
+ *   The key name.
+ *
+ * @param string $value
+ *   The value string.
+ *
+ * @param string $context
+ *   The string describing the context.
+ *
+ * @return string
+ *   The generated string.
+ */
+function local_get_custom_var_string($index, $name, $value, $context) {
+    $result = 'piwikTracker.setCustomVariable(';
+    $result .= $index . ', ';
+    $result .= '"' . $name . '", ';
+    $result .= '"' . $value . '", ';
+    $result.= '"' . $context . '"';
+    $result.= ");\n";
+
+    return $result;
 }
 
 /**
