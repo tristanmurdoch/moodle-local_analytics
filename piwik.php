@@ -104,8 +104,9 @@ function local_get_custom_var_string($index, $name, $value, $context) {
  **/
 
 function local_insert_custom_moodle_vars() {
-    global $DB, $PAGE, $COURSE, $SITE;
+    global $DB, $PAGE, $COURSE, $SITE, $USER;
     $customvars="";
+    $context = context_course::instance($COURSE->id);
 
     // Option is visit/page
     // see http://piwik.org/docs/custom-variables/
@@ -113,23 +114,32 @@ function local_insert_custom_moodle_vars() {
 
     //User Details
     // "John Smith ([user_id])"
-    $customvars.='piwikTracker.setCustomVariable(1, "UserName", "'.("").'", '.$scope.');';
-    $customvars.='piwikTracker.trackPageView();'; #NOTE: I'm not sure if you have do this every time.
+    $customvars .= local_get_custom_var_string(1, 'UserName', fullname($USER), $scope);
 
-    //User Role
-    $customvars.='piwikTracker.setCustomVariable(2, "UserRole", "'.("").'", '.$scope.');';
-    $customvars.='piwikTracker.trackPageView();';
+    // User Role
+    if (is_siteadmin($USER->id)) {
+        $rolestr = "Admin";
+    }
+    else {
+        $roles = get_user_roles($context, $USER->id);
+        $rolestr = array();
+        foreach ($roles as $role) {
+            $rolestr[] = role_get_name($role, $context);
+        }
+        $rolestr = implode(', ', $rolestr);
+    }
+    $customvars .= local_get_custom_var_string(2, 'UserRole', $rolestr, $scope);
 
     //Context Type: i.e. page , course, activity ?
-    $customvars.='piwikTracker.setCustomVariable(3, "Context", "'.("").'", '.$scope.');';
-    $customvars.='piwikTracker.trackPageView();';
+    $customvars .= local_get_custom_var_string(3, 'Context', $context->get_context_name(), $scope);
 
     //Course Name
     // "Mathematics for Accountants ([course_id])"
-    $customvars.='piwikTracker.setCustomVariable(4, "CourseName", "'.("").'", '.$scope.');';
-    $customvars.='piwikTracker.trackPageView();';
+    $customvars .= local_get_custom_var_string(4, 'CourseName', $COURSE->fullname, $scope);
 
     //Max 5 Variables
+
+    $customvars.='piwikTracker.trackPageView();';
 
     return $customvars;
 
