@@ -31,17 +31,21 @@ require_once(dirname(__FILE__).'/piwik.php');
 require_once(dirname(__FILE__).'/ganalytics.php');
 require_once(dirname(__FILE__).'/guniversal.php');
 
-$enabled = get_config('local_analytics', 'enabled');
-$analytics = get_config('local_analytics', 'analytics');
+function local_analytics_execute() {
+    $enabled = get_config('local_analytics', 'enabled');
+    $analytics = get_config('local_analytics', 'analytics');
 
-if ($enabled) {
-    if ($analytics === "piwik") {
-        $engine = new local_analytics_piwik();
-    } elseif ($analytics === "ganalytics") {
-        $engine = new local_analytics_ganalytics();
-    } elseif ($analytics === "guniversal") {
-        $engine = new local_analytics_guniversal();
+    if ($enabled) {
+        if ($analytics === "piwik") {
+            $engine = new local_analytics_piwik();
+        } elseif ($analytics === "ganalytics") {
+            $engine = new local_analytics_ganalytics();
+        } elseif ($analytics === "guniversal") {
+            $engine = new local_analytics_guniversal();
+        }
+
+        $engine::insert_tracking();
     }
-
-    $engine::insert_tracking();
 }
+
+local_analytics_execute();
