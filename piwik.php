@@ -25,7 +25,7 @@
  * @author     David Bezemer <info@davidbezemer.nl>, Bas Brands <bmbrands@gmail.com>, Gavin Henrick <gavin@lts.ie>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
+
 function local_analytics_trackurl() {
     global $DB, $PAGE, $COURSE, $SITE;
     $pageinfo = get_context_info_array($PAGE->context->id);
@@ -144,7 +144,7 @@ function local_insert_custom_moodle_vars() {
     return $customvars;
 
 }
- 
+
 function insert_local_analytics_tracking() {
     global $CFG;
     $enabled = get_config('local_analytics', 'enabled');
@@ -154,20 +154,20 @@ function insert_local_analytics_tracking() {
     $trackadmin = get_config('local_analytics', 'trackadmin');
     $cleanurl = get_config('local_analytics', 'cleanurl');
 	$location = "additionalhtml".get_config('local_analytics', 'location');
-    
+
 	if (!empty($siteurl)) {
 		if ($imagetrack) {
 			$addition = '<noscript><p><img src="//'.$siteurl.'/piwik.php?idsite='.$siteid.'" style="border:0;" alt="" /></p></noscript>';
 		} else {
 			$addition = '';
 		}
-		
+
 		if ($cleanurl) {
 			$doctitle = "_paq.push(['setDocumentTitle', ".local_analytics_trackurl()."]);";
 		} else {
 			$doctitle = "";
 		}
-		
+
 		if ($enabled && (!is_siteadmin() || $trackadmin)) {
 			$CFG->$location .= "
 <!-- Start Piwik Code -->
