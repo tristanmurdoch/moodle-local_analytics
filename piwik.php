@@ -88,12 +88,13 @@ class local_analytics_piwik implements local_analytics_interface {
      * @return string The generated string.
      */
     static private function local_get_custom_var_string($index, $name, $value, $context) {
-        $result = 'piwikTracker.setCustomVariable(';
+        $result = '_paq.push(["setCustomVariable", ';
         $result .= $index . ', ';
         $result .= '"' . $name . '", ';
         $result .= '"' . $value . '", ';
-        $result .= '"' . $context . '"';
-        $result .= ");\n";
+        /* $result .= '"' . $context . '"'; */
+        $result .= '"page"';
+        $result .= "]);\n";
 
         return $result;
     }
