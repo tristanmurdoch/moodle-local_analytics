@@ -87,7 +87,7 @@ class local_analytics_piwik implements local_analytics_interface {
      *
      * @return string The generated string.
      */
-    static private function local_get_custom_var_string($index, $name, $value, $context) {
+    static public function local_get_custom_var_string($index, $name, $value, $context) {
         $result = '_paq.push(["setCustomVariable", ';
         $result .= $index . ', ';
         $result .= '"' . $name . '", ';
@@ -109,7 +109,7 @@ class local_analytics_piwik implements local_analytics_interface {
      * - http://piwik.org/docs/custom-variables/
      * https://piwik.org/faq/general/faq_21117/
      */
-    static private function local_insert_custom_moodle_vars() {
+    static public function local_insert_custom_moodle_vars() {
         global $DB, $PAGE, $COURSE, $SITE, $USER;
         $customvars = "";
         $context = context_course::instance($COURSE->id);
@@ -184,7 +184,7 @@ class local_analytics_piwik implements local_analytics_interface {
           _paq.push(['setSiteId', " . $siteid . "]); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
         g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
         })();
-    </script>" . $addition . "<!-- End Piwik Code -->";
+    </script>" . $addition . "<!-- End Piwik Code -->\n";
             }
         }
     }

@@ -39,9 +39,16 @@ require_once(dirname(__DIR__) . '/lib.php');
  */
 
 class mock_page {
+    static $editing = FALSE;
+
     function user_is_editing() {
-        return FALSE;
+        return self::$editing;
     }
+
+    function set_editing($value) {
+        self::$editing = $value;
+    }
+
 }
 
 class local_analytics_testcase extends advanced_testcase {
@@ -63,6 +70,10 @@ class local_analytics_testcase extends advanced_testcase {
         // Create course and wiki.
         $this->course = $this->getDataGenerator()->create_course();
         $this->wiki = $this->getDataGenerator()->create_module('wiki', array('course' => $this->course->id));
+
+        // Assign the guest role to the guest user in the course.
+        $context = context_course::instance($this->course->id);
+        role_assign(6, 1, $context->id);
 
         // Set the location where output will be added.
         set_config('location', 'local_analytics', 'header');
@@ -111,6 +122,29 @@ class local_analytics_testcase extends advanced_testcase {
         $this->assertEquals("'Miscellaneous/Test course 1/View'", $trackurl);
     }
 
+    /**
+     * Test that Piwik track URL for a course with editing enabled is generated correctly.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the local_analytics_trackurl function in the piwik support is invoked
+     * AND editing is enabled
+     * AND a course category name and course full name can be used
+     * THEN it should return the expected URL.
+     *
+     * @test
+     */
+    public function piwikTrackUrlForCourseBeingEdited() {
+        global $CFG, $PAGE;
+
+        $PAGE = new mock_page();
+        $PAGE->set_editing(TRUE);
+        $PAGE->context = context_course::instance($this->course->id);
+
+        $piwik = new local_analytics_piwik();
+        $trackurl = $piwik::trackurl();
+
+        $this->assertEquals("'Miscellaneous/Test course 1/Edit'", $trackurl);
+    }
 
     /**
      * Test that Piwik track URL for an activity within a course is generated correctly.
@@ -134,6 +168,196 @@ class local_analytics_testcase extends advanced_testcase {
         $this->assertEquals("'Miscellaneous/Test course 1/wiki/Wiki 1'", $trackurl);
     }
 
+    /**
+     * Test that Piwik custom variable string generation produces anticipated output.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the local_get_custom_var_string function in the piwik support is invoked
+     * THEN it should return the expected string.
+     *
+     * @test
+     */
+    public function piwikCustomVariableStringGenerationProducesExpectedOutput() {
+        $piwik = new local_analytics_piwik();
+        $actual = $piwik::local_get_custom_var_string(987, 'name', 'value', 'context');
+
+        $expected = '_paq.push(["setCustomVariable", 987, "name", "value", "page"]);';
+        $expected .= "\n";
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test that Piwik insert custom moodle vars function returns the anticipated vars string for siteadmins.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the local_get_custom_var_string function in the piwik support is invoked
+     * AND the user is a siteadmin
+     * THEN it should return the expected string.
+     *
+     * @test
+     */
+    public function piwikCustomMoodleVarsGenerationProducesExpectedOutputForAdmin() {
+        global $PAGE;
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_course::instance($this->course->id);
+
+        $piwik = new local_analytics_piwik();
+        $actual = $piwik::local_insert_custom_moodle_vars();
+
+        $expected = '_paq.push(["setCustomVariable", 1, "UserName", "Admin User", "page"]);' . "\n";
+        $expected .= '_paq.push(["setCustomVariable", 2, "UserRole", "Admin", "page"]);' . "\n";
+        $expected .= '_paq.push(["setCustomVariable", 3, "Context", "Front page", "page"]);' . "\n";
+        $expected .= '_paq.push(["setCustomVariable", 4, "CourseName", "PHPUnit test site", "page"]);' . "\n";
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test that Piwik insert custom moodle vars function returns the anticipated vars string for non admins.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the local_get_custom_var_string function in the piwik support is invoked
+     * AND the user is not a site administrator
+     * THEN it should return the expected string.
+     *
+     * @test
+     */
+    public function piwikCustomMoodleVarsGenerationProducesExpectedOutputForNonAdmin() {
+        global $PAGE, $COURSE, $USER, $DB;
+
+        $COURSE = $this->course;
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_course::instance($COURSE->id);
+
+        $USER = $DB->get_record('user', array('id' => 1));
+
+        $piwik = new local_analytics_piwik();
+        $actual = $piwik::local_insert_custom_moodle_vars();
+
+        $expected = '_paq.push(["setCustomVariable", 1, "UserName", "Guest user  ", "page"]);' . "\n";
+        $expected .= '_paq.push(["setCustomVariable", 2, "UserRole", "Guest", "page"]);' . "\n";
+        $expected .= '_paq.push(["setCustomVariable", 3, "Context", "Course: Test course 1", "page"]);' . "\n";
+        $expected .= '_paq.push(["setCustomVariable", 4, "CourseName", "Test course 1", "page"]);' . "\n";
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test that Piwik's insert tracking function works as expected.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the insert_tracking function in the piwik support is invoked
+     * THEN the Pikiw Javascript should be inserted in the additionalhtml
+     *
+     * @test
+     */
+    public function piwikInsertsJavascriptInAdditionalHtml() {
+        global $PAGE, $COURSE, $USER, $DB, $CFG;
+
+        set_config('imagetrack', TRUE, 'local_analytics');
+        set_config('siteurl', 'http://somewhere', 'local_analytics');
+        set_config('siteid', 2468, 'local_analytics');
+        set_config('trackadmin', 'admin@track.nowhere', 'local_analytics');
+        set_config('cleanurl', TRUE, 'local_analytics');
+        set_config('location', 'somewhere', 'local_analytics');
+
+        $CFG->additionalhtmlsomewhere = '';
+
+        $COURSE = $this->course;
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_course::instance($COURSE->id);
+
+        $USER = $DB->get_record('user', array('id' => 1));
+
+        $piwik = new local_analytics_piwik();
+        $piwik::insert_tracking();
+
+        $actual = $CFG->additionalhtmlsomewhere;
+        $expected = file_get_contents(__DIR__ . '/expected/piwik_additional.html');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test that Piwik's insert tracking function works as expected without clean URLs.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the insert_tracking function in the piwik support is invoked
+     * AND the clean URL option is disabled
+     * THEN the Pikiw Javascript should be as expected.
+     *
+     * @test
+     */
+    public function piwikInsertsJavascriptInAdditionalHtmlWithoutCleanUrlOption() {
+        global $PAGE, $COURSE, $USER, $DB, $CFG;
+
+        set_config('imagetrack', TRUE, 'local_analytics');
+        set_config('siteurl', 'http://somewhere', 'local_analytics');
+        set_config('siteid', 2468, 'local_analytics');
+        set_config('trackadmin', 'admin@track.nowhere', 'local_analytics');
+        set_config('cleanurl', FALSE, 'local_analytics');
+        set_config('location', 'somewhere', 'local_analytics');
+
+        $CFG->additionalhtmlsomewhere = '';
+
+        $COURSE = $this->course;
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_course::instance($COURSE->id);
+
+        $USER = $DB->get_record('user', array('id' => 1));
+
+        $piwik = new local_analytics_piwik();
+        $piwik::insert_tracking();
+
+        $actual = $CFG->additionalhtmlsomewhere;
+        $expected = file_get_contents(__DIR__ . '/expected/piwik_additional_no_cleanurl.html');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+
+    /**
+     * Test that Piwik's insert tracking function works as expected without image tracking turned on.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the insert_tracking function in the piwik support is invoked
+     * AND image tracking is disabled
+     * THEN the Pikiw Javascript should be inserted in the additionalhtml as expected.
+     *
+     * @test
+     */
+    public function piwikInsertsJavascriptInAdditionalHtmlWithoutImageTrackOption() {
+        global $PAGE, $COURSE, $USER, $DB, $CFG;
+
+        set_config('imagetrack', FALSE, 'local_analytics');
+        set_config('siteurl', 'http://somewhere', 'local_analytics');
+        set_config('siteid', 2468, 'local_analytics');
+        set_config('trackadmin', 'admin@track.nowhere', 'local_analytics');
+        set_config('cleanurl', TRUE, 'local_analytics');
+        set_config('location', 'somewhere', 'local_analytics');
+
+        $CFG->additionalhtmlsomewhere = '';
+
+        $COURSE = $this->course;
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_course::instance($COURSE->id);
+
+        $USER = $DB->get_record('user', array('id' => 1));
+
+        $piwik = new local_analytics_piwik();
+        $piwik::insert_tracking();
+
+        $actual = $CFG->additionalhtmlsomewhere;
+        $expected = file_get_contents(__DIR__ . '/expected/piwik_additional_no_imagetrack.html');
+
+        $this->assertEquals($expected, $actual);
+    }
     /**
      * Test that enabling Piwik analytics causes appropriate JS to be added.
      *
