@@ -148,7 +148,7 @@ class local_analytics_piwik implements local_analytics_interface {
     }
 
     static public function insert_tracking() {
-        global $CFG;
+        global $CFG, $USER;
         $enabled = get_config('local_analytics', 'enabled');
         $imagetrack = get_config('local_analytics', 'imagetrack');
         $siteurl = get_config('local_analytics', 'siteurl');
@@ -176,6 +176,7 @@ class local_analytics_piwik implements local_analytics_interface {
     <script type='text/javascript'>
         var _paq = _paq || [];
         " . $doctitle . self::local_insert_custom_moodle_vars() . "
+        _paq.push(['setUserId', $USER->id]);
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
         (function() {
