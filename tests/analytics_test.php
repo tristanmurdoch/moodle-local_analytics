@@ -78,6 +78,16 @@ class local_analytics_testcase extends advanced_testcase {
         // Set the location where output will be added.
         set_config('location', 'header', 'local_analytics');
         $CFG->additionalhtmlheader = '';
+
+        // Set default config to minimise repetition across tests.
+        set_config('enabled', TRUE, 'local_analytics');
+        set_config('analytics', 'piwik', 'local_analytics');
+        set_config('imagetrack', TRUE, 'local_analytics');
+        set_config('siteurl', 'http://somewhere', 'local_analytics');
+        set_config('siteid', 2468, 'local_analytics');
+        set_config('trackadmin', 'admin@track.nowhere', 'local_analytics');
+        set_config('cleanurl', TRUE, 'local_analytics');
+        set_config('location', 'header', 'local_analytics');
     }
 
     /**
@@ -257,15 +267,6 @@ class local_analytics_testcase extends advanced_testcase {
     public function piwikInsertsJavascriptInAdditionalHtml() {
         global $PAGE, $COURSE, $USER, $DB, $CFG;
 
-        set_config('imagetrack', TRUE, 'local_analytics');
-        set_config('siteurl', 'http://somewhere', 'local_analytics');
-        set_config('siteid', 2468, 'local_analytics');
-        set_config('trackadmin', 'admin@track.nowhere', 'local_analytics');
-        set_config('cleanurl', TRUE, 'local_analytics');
-        set_config('location', 'somewhere', 'local_analytics');
-
-        $CFG->additionalhtmlsomewhere = '';
-
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
@@ -276,7 +277,7 @@ class local_analytics_testcase extends advanced_testcase {
         $piwik = new local_analytics_piwik();
         $piwik::insert_tracking();
 
-        $actual = $CFG->additionalhtmlsomewhere;
+        $actual = $CFG->additionalhtmlheader;
         $expected = file_get_contents(__DIR__ . '/expected/piwik_additional.html');
 
         $this->assertEquals($expected, $actual);
@@ -295,14 +296,7 @@ class local_analytics_testcase extends advanced_testcase {
     public function piwikInsertsJavascriptInAdditionalHtmlWithoutCleanUrlOption() {
         global $PAGE, $COURSE, $USER, $DB, $CFG;
 
-        set_config('imagetrack', TRUE, 'local_analytics');
-        set_config('siteurl', 'http://somewhere', 'local_analytics');
-        set_config('siteid', 2468, 'local_analytics');
-        set_config('trackadmin', 'admin@track.nowhere', 'local_analytics');
         set_config('cleanurl', FALSE, 'local_analytics');
-        set_config('location', 'somewhere', 'local_analytics');
-
-        $CFG->additionalhtmlsomewhere = '';
 
         $COURSE = $this->course;
 
@@ -314,7 +308,7 @@ class local_analytics_testcase extends advanced_testcase {
         $piwik = new local_analytics_piwik();
         $piwik::insert_tracking();
 
-        $actual = $CFG->additionalhtmlsomewhere;
+        $actual = $CFG->additionalhtmlheader;
         $expected = file_get_contents(__DIR__ . '/expected/piwik_additional_no_cleanurl.html');
 
         $this->assertEquals($expected, $actual);
@@ -335,13 +329,6 @@ class local_analytics_testcase extends advanced_testcase {
         global $PAGE, $COURSE, $USER, $DB, $CFG;
 
         set_config('imagetrack', FALSE, 'local_analytics');
-        set_config('siteurl', 'http://somewhere', 'local_analytics');
-        set_config('siteid', 2468, 'local_analytics');
-        set_config('trackadmin', 'admin@track.nowhere', 'local_analytics');
-        set_config('cleanurl', TRUE, 'local_analytics');
-        set_config('location', 'somewhere', 'local_analytics');
-
-        $CFG->additionalhtmlsomewhere = '';
 
         $COURSE = $this->course;
 
@@ -353,7 +340,7 @@ class local_analytics_testcase extends advanced_testcase {
         $piwik = new local_analytics_piwik();
         $piwik::insert_tracking();
 
-        $actual = $CFG->additionalhtmlsomewhere;
+        $actual = $CFG->additionalhtmlheader;
         $expected = file_get_contents(__DIR__ . '/expected/piwik_additional_no_imagetrack.html');
 
         $this->assertEquals($expected, $actual);
