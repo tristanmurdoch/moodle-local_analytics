@@ -86,7 +86,7 @@ class local_analytics_testcase extends advanced_testcase {
      * GIVEN the local analytics plugin
      * WHEN its lib.php is included
      * AND the enabled setting for the module is FALSE
-     * THEN no additional HTML should be added to the output.
+     * THEN no additional content should be added to the output.
      *
      * @test
      */
