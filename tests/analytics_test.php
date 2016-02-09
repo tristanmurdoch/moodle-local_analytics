@@ -76,7 +76,7 @@ class local_analytics_testcase extends advanced_testcase {
         role_assign(6, 1, $context->id);
 
         // Set the location where output will be added.
-        set_config('location', 'local_analytics', 'header');
+        set_config('location', 'header', 'local_analytics');
         $CFG->additionalhtmlheader = '';
     }
 
