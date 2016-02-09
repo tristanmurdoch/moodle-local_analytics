@@ -177,13 +177,13 @@ class local_analytics_piwik implements local_analytics_interface {
     <!-- Start Piwik Code -->
     <script type='text/javascript'>
         var _paq = _paq || [];
-        " . $doctitle . "
+        " . $doctitle . self::local_insert_custom_moodle_vars() . "
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
         (function() {
           var u='//" . $siteurl . "/';
           _paq.push(['setTrackerUrl', u+'piwik.php']);
-          _paq.push(['setSiteId', " . $siteid . "]);" . self::local_insert_custom_moodle_vars() . "var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+          _paq.push(['setSiteId', " . $siteid . "]); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
         g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
         })();
     </script>" . $addition . "<!-- End Piwik Code -->";
