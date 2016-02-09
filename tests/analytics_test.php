@@ -345,26 +345,24 @@ class local_analytics_testcase extends advanced_testcase {
 
         $this->assertEquals($expected, $actual);
     }
+
     /**
      * Test that enabling Piwik analytics causes appropriate JS to be added.
      *
      * GIVEN the local analytics plugin
      * WHEN its lib.php is included
-     * AND the enabled setting for the module is FALSE
-     * THEN no additional HTML should be added to the output.
+     * AND the enabled setting for the module is TRUE
+     * AND the analytics module is set to Piwik
+     * THEN the Piwik Javascript should be added to the output.
      *
      * @test
      */
-    public function enabledPiwikModuleResultsInNoOutput() {
+    public function enabledPiwikModuleResultsInExpectedOutput() {
         global $CFG;
 
-        set_config('enabled', TRUE, 'local_analytics');
-        set_config('analytics', 'piwik', 'local_analytics');
+        local_analytics_execute();
 
-        require_once($CFG->dirroot . '/local/analytics/lib.php');
-
-        $location = "additionalhtml" . get_config('local_analytics', 'location');
-        $this->assertEmpty($CFG->$location);
+        $this->assertNotEmpty($CFG->additionalhtmlheader);
     }
 
 }
