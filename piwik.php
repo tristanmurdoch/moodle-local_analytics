@@ -144,8 +144,6 @@ class local_analytics_piwik implements local_analytics_interface {
 
         // Max 5 Variables
 
-        $customvars .= 'piwikTracker.trackPageView();';
-
         return $customvars;
     }
 
