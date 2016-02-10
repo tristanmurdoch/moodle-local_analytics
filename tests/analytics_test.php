@@ -587,4 +587,38 @@ class local_analytics_testcase extends advanced_testcase {
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * Test that enabling Google analytics universal causes appropriate JS to be added when clean URL is disabled.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN its lib.php is included
+     * AND the enabled setting for the module is TRUE
+     * AND the page being visited is a course page
+     * AND the analytics module is set to Google Analytics Universal
+     * AND the clean URL option is disabled
+     * THEN the GA Universal Javascript should be added to the output.
+     *
+     * @test
+     */
+    public function enabledGoogleAnalyticsUniversalModuleResultsInExpectedOutputForCoursePageWithUncleanUrl() {
+        global $PAGE, $COURSE, $USER, $DB, $CFG;
+
+        set_config('analytics', 'guniversal', 'local_analytics');
+        set_config('cleanurl', FALSE, 'local_analytics');
+
+        $COURSE = $this->course;
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_course::instance($COURSE->id);
+
+        $USER = $DB->get_record('user', array('id' => 1));
+
+        local_analytics_execute();
+
+        $expected = file_get_contents(__DIR__ . '/expected/google_analytics_universal_course_unclean_url.html');
+        $actual = $CFG->additionalhtmlheader;
+
+        $this->assertEquals($expected, $actual);
+    }
+
 }
