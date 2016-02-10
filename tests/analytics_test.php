@@ -391,6 +391,30 @@ class local_analytics_testcase extends advanced_testcase {
     }
 
     /**
+     * Test that GA track URL for an activity within a course is generated correctly.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the local_analytics_trackurl function in the GA support is invoked
+     * AND a course category name, course full name and activity name can be used
+     * THEN it should return the expected URL.
+     *
+     * @test
+     */
+    public function googleAnalyticsTrackUrlForActivityInCourseIsCorrect() {
+        global $CFG, $PAGE;
+
+        set_config('analytics', 'ganalytics', 'local_analytics');
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_module::instance($this->wiki->cmid);
+
+        $ga = new local_analytics_guniversal();
+        $trackurl = $ga::trackurl();
+
+        $this->assertEquals("'/Miscellaneous/Test+course+1/wiki/Wiki+1'", $trackurl);
+    }
+
+    /**
      * Test that enabling Google analytics causes appropriate JS to be added.
      *
      * GIVEN the local analytics plugin
