@@ -347,6 +347,31 @@ class local_analytics_testcase extends advanced_testcase {
         $this->assertEquals($expected, $actual);
     }
 
+
+    /**
+     * Test that having a bogus analytics engine setting enabled results in a debugging message.
+     *
+     * This test deliberately has 'test' at the start of the name because at the time of writing, the
+     * debugging() code doesn't detect @test when deciding how to dispose of a debugging message.
+     * It will therefore mess up the debugging output without this hint.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the enabled setting for the module is TRUE
+     * AND the analytics module is invalid
+     * THEN a debugging message should be added to the output.
+     *
+     * @test
+     */
+    public function testEnabledBogusModuleResultsInDebuggingMessage() {
+        global $CFG;
+
+        set_config('analytics', 'i_am_bogus', 'local_analytics');
+
+        local_analytics_execute();
+
+        $this->assertDebuggingCalled();
+    }
+
     /**
      * Test that enabling Piwik analytics causes appropriate JS to be added.
      *
