@@ -39,14 +39,15 @@ require_once(dirname(__DIR__) . '/lib.php');
  */
 
 class mock_page {
-    static $editing = FALSE;
+    private $editing = FALSE;
+    public $heading = 'This is a heading';
 
     function user_is_editing() {
-        return self::$editing;
+        return $this->editing;
     }
 
     function set_editing($value) {
-        self::$editing = $value;
+        $this->editing = $value;
     }
 
 }
