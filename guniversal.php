@@ -27,7 +27,7 @@
  */
 require_once('local_analytics_interface.php');
 
-class guniversal_analytics implements local_analytics_interface {
+class local_analytics_guniversal implements local_analytics_interface {
     static public function trackurl() {
         global $DB, $PAGE, $COURSE;
         $pageinfo = get_context_info_array($PAGE->context->id);
