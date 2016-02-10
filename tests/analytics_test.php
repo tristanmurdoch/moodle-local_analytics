@@ -112,6 +112,30 @@ class local_analytics_testcase extends advanced_testcase {
     }
 
     /**
+     * Test that having a bogus analytics engine setting enabled results in a debugging message.
+     *
+     * This test deliberately has 'test' at the start of the name because at the time of writing, the
+     * debugging() code doesn't detect @test when deciding how to dispose of a debugging message.
+     * It will therefore mess up the debugging output without this hint.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the enabled setting for the module is TRUE
+     * AND the analytics module is invalid
+     * THEN a debugging message should be added to the output.
+     *
+     * @test
+     */
+    public function testEnabledBogusModuleResultsInDebuggingMessage() {
+        global $CFG;
+
+        set_config('analytics', 'i_am_bogus', 'local_analytics');
+
+        local_analytics_execute();
+
+        $this->assertDebuggingCalled();
+    }
+
+    /**
      * Test that Piwik track URL for a course is generated correctly.
      *
      * GIVEN the local analytics plugin
@@ -347,31 +371,6 @@ class local_analytics_testcase extends advanced_testcase {
         $this->assertEquals($expected, $actual);
     }
 
-
-    /**
-     * Test that having a bogus analytics engine setting enabled results in a debugging message.
-     *
-     * This test deliberately has 'test' at the start of the name because at the time of writing, the
-     * debugging() code doesn't detect @test when deciding how to dispose of a debugging message.
-     * It will therefore mess up the debugging output without this hint.
-     *
-     * GIVEN the local analytics plugin
-     * WHEN the enabled setting for the module is TRUE
-     * AND the analytics module is invalid
-     * THEN a debugging message should be added to the output.
-     *
-     * @test
-     */
-    public function testEnabledBogusModuleResultsInDebuggingMessage() {
-        global $CFG;
-
-        set_config('analytics', 'i_am_bogus', 'local_analytics');
-
-        local_analytics_execute();
-
-        $this->assertDebuggingCalled();
-    }
-
     /**
      * Test that enabling Piwik analytics causes appropriate JS to be added.
      *
@@ -383,7 +382,7 @@ class local_analytics_testcase extends advanced_testcase {
      *
      * @test
      */
-    public function enabledPiwikModuleResultsInExpectedOutput() {
+    public function piwikModuleEnabledResultsInExpectedOutput() {
         global $CFG;
 
         local_analytics_execute();
@@ -402,7 +401,7 @@ class local_analytics_testcase extends advanced_testcase {
      *
      * @test
      */
-    public function enabledGoogleAnalyticsModuleResultsInExpectedOutput() {
+    public function googleAnalyticsModuleResultsInExpectedOutput() {
         global $CFG;
 
         set_config('analytics', 'ganalytics', 'local_analytics');
@@ -426,11 +425,10 @@ class local_analytics_testcase extends advanced_testcase {
      *
      * @test
      */
-    public function enabledGoogleAnalyticsModuleResultsInExpectedOutputForCoursePage() {
+    public function googleAnalyticsModuleResultsInExpectedOutputForCoursePage() {
         global $CFG, $DB;
 
         set_config('analytics', 'ganalytics', 'local_analytics');
-        set_config('imagetrack', FALSE, 'local_analytics');
 
         $COURSE = $this->course;
 
