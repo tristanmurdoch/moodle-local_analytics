@@ -84,7 +84,7 @@ class local_analytics_testcase extends advanced_testcase {
         set_config('enabled', TRUE, 'local_analytics');
         set_config('analytics', 'piwik', 'local_analytics');
         set_config('imagetrack', TRUE, 'local_analytics');
-        set_config('siteurl', 'http://somewhere', 'local_analytics');
+        set_config('siteurl', 'somewhere', 'local_analytics');
         set_config('siteid', 2468, 'local_analytics');
         set_config('trackadmin', 'admin@track.nowhere', 'local_analytics');
         set_config('cleanurl', TRUE, 'local_analytics');
