@@ -366,4 +366,154 @@ class local_analytics_testcase extends advanced_testcase {
         $this->assertNotEmpty($CFG->additionalhtmlheader);
     }
 
+    /**
+     * Test that enabling Google analytics causes appropriate JS to be added.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN its lib.php is included
+     * AND the enabled setting for the module is TRUE
+     * AND the analytics module is set to Google Analytics
+     * THEN the GA Javascript should be added to the output.
+     *
+     * @test
+     */
+    public function enabledGoogleAnalyticsModuleResultsInExpectedOutput() {
+        global $CFG;
+
+        set_config('analytics', 'ganalytics', 'local_analytics');
+
+        local_analytics_execute();
+
+        $expected = file_get_contents(__DIR__ . '/expected/google_analytics.html');
+        $actual = $CFG->additionalhtmlheader;
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test that enabling Google analytics causes appropriate JS to be added.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN its lib.php is included
+     * AND the enabled setting for the module is TRUE
+     * AND the analytics module is set to Google Analytics
+     * THEN the GA Javascript should be added to the output.
+     *
+     * @test
+     */
+    public function enabledGoogleAnalyticsModuleResultsInExpectedOutputForCoursePage() {
+        global $CFG, $DB;
+
+        set_config('analytics', 'ganalytics', 'local_analytics');
+        set_config('imagetrack', FALSE, 'local_analytics');
+
+        $COURSE = $this->course;
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_course::instance($COURSE->id);
+
+        $USER = $DB->get_record('user', array('id' => 1));
+        local_analytics_execute();
+
+        $expected = file_get_contents(__DIR__ . '/expected/google_analytics_course_page.html');
+        $actual = $CFG->additionalhtmlheader;
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test that enabling Google analytics universal causes appropriate JS to be added.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN its lib.php is included
+     * AND the enabled setting for the module is TRUE
+     * AND the page being visited is a course page
+     * AND the analytics module is set to Google Analytics Universal
+     * THEN the GA Universal Javascript should be added to the output.
+     *
+     * @test
+     */
+    public function enabledGoogleAnalyticsUniversalModuleResultsInExpectedOutput() {
+        global $PAGE, $COURSE, $USER, $DB, $CFG;
+
+        set_config('analytics', 'guniversal', 'local_analytics');
+        set_config('imagetrack', FALSE, 'local_analytics');
+
+        $USER = $DB->get_record('user', array('id' => 1));
+
+        local_analytics_execute();
+
+        $expected = file_get_contents(__DIR__ . '/expected/google_analytics_universal.html');
+        $actual = $CFG->additionalhtmlheader;
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test that enabling Google analytics universal causes appropriate JS to be added for a course page.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN its lib.php is included
+     * AND the enabled setting for the module is TRUE
+     * AND the page being visited is a course page
+     * AND the analytics module is set to Google Analytics Universal
+     * THEN the GA Universal Javascript should be added to the output.
+     *
+     * @test
+     */
+    public function enabledGoogleAnalyticsUniversalModuleResultsInExpectedOutputForCoursePage() {
+        global $PAGE, $COURSE, $USER, $DB, $CFG;
+
+        set_config('analytics', 'guniversal', 'local_analytics');
+        set_config('imagetrack', FALSE, 'local_analytics');
+
+        $COURSE = $this->course;
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_course::instance($COURSE->id);
+
+        $USER = $DB->get_record('user', array('id' => 1));
+
+        local_analytics_execute();
+
+        $expected = file_get_contents(__DIR__ . '/expected/google_analytics_universal_course_page.html');
+        $actual = $CFG->additionalhtmlheader;
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Test that enabling Google analytics universal causes appropriate JS to be added for a course page.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN its lib.php is included
+     * AND the enabled setting for the module is TRUE
+     * AND the page being visited is a course page
+     * AND the analytics module is set to Google Analytics Universal
+     * THEN the GA Universal Javascript should be added to the output.
+     *
+     * @test
+     */
+    public function enabledGoogleAnalyticsUniversalModuleResultsInExpectedOutputForCoursePageBeingEdited() {
+        global $PAGE, $COURSE, $USER, $DB, $CFG;
+
+        set_config('analytics', 'guniversal', 'local_analytics');
+        set_config('imagetrack', FALSE, 'local_analytics');
+
+        $COURSE = $this->course;
+
+        $PAGE = new mock_page();
+        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->set_editing(TRUE);
+
+        $USER = $DB->get_record('user', array('id' => 1));
+
+        local_analytics_execute();
+
+        $expected = file_get_contents(__DIR__ . '/expected/google_analytics_universal_course_page_editing.html');
+        $actual = $CFG->additionalhtmlheader;
+
+        $this->assertEquals($expected, $actual);
+    }
+
 }
