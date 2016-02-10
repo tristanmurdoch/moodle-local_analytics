@@ -32,6 +32,8 @@ require_once(dirname(__FILE__).'/ganalytics.php');
 require_once(dirname(__FILE__).'/guniversal.php');
 
 function local_analytics_execute() {
+    $engine = NULL;
+
     $enabled = get_config('local_analytics', 'enabled');
     $analytics = get_config('local_analytics', 'analytics');
 
@@ -42,9 +44,13 @@ function local_analytics_execute() {
             $engine = new local_analytics_ganalytics();
         } elseif ($analytics === "guniversal") {
             $engine = new local_analytics_guniversal();
+        } else {
+            debugging("Local Analytics Module: Analytics setting '{$analytics}' doesn't map to a class name.");
         }
 
-        $engine::insert_tracking();
+        if (!is_null($engine)) {
+            $engine::insert_tracking();
+        }
     }
 }
 
