@@ -86,9 +86,68 @@ class local_analytics_testcase extends advanced_testcase {
         set_config('imagetrack', TRUE, 'local_analytics');
         set_config('siteurl', 'somewhere', 'local_analytics');
         set_config('siteid', 2468, 'local_analytics');
-        set_config('trackadmin', 'admin@track.nowhere', 'local_analytics');
+        set_config('trackadmin', TRUE, 'local_analytics');
         set_config('cleanurl', TRUE, 'local_analytics');
         set_config('location', 'header', 'local_analytics');
+    }
+
+    /**
+     * Test that shouldTrack returns TRUE for site admins when trackadmin on.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN its shouldTrack function is invoked
+     * AND trackadmin is TRUE
+     * AND the user is a site admin
+     * THEN the result should be TRUE
+     */
+    public function shouldTrackReturnsTrueForSiteadminsWhenTrackAdminOn() {
+      $piwik = new local_analytics_piwik();
+      $actual = $piwik::shouldTrack();
+
+      $this->assertTrue($actual);
+    }
+
+    /**
+     * Test that shouldTrack returns FALSE for site admins when trackadmin off.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN its shouldTrack function is invoked
+     * AND trackadmin is FALSE
+     * AND the user is a site admin
+     * THEN the result should be FALSE
+     */
+    public function shouldTrackReturnsFalseForSiteadminsWhenTrackAdminOff() {
+
+      set_config('trackadmin', FALSE, 'local_analytics');
+
+      $piwik = new local_analytics_piwik();
+      $actual = $piwik::shouldTrack();
+
+      $this->assertFalse($actual);
+    }
+
+    /**
+     * Test that shouldTrack returns TRUE for non site admins.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN its shouldTrack function is invoked
+     * AND the user is not a site admin
+     * THEN the result should be TRUE
+     */
+    public function shouldTrackReturnsTrueForNonSiteadmins() {
+
+      $this->setGuestUser();
+
+      $piwik = new local_analytics_piwik();
+      $actual = $piwik::shouldTrack();
+
+      $this->assertTrue($actual);
+
+      // Trackadmin shouldn't make a difference.
+      set_config('trackadmin', FALSE, 'local_analytics');
+      $actual = $piwik::shouldTrack();
+
+      $this->assertTrue($actual);
     }
 
     /**
