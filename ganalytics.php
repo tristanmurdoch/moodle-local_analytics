@@ -31,7 +31,7 @@ require_once('AbstractLocalAnalytics.php');
 class local_analytics_ganalytics extends AbstractLocalAnalytics {
     static public function insert_tracking() {
         global $CFG;
-        $enabled = get_config('local_analytics', 'enabled');
+
         $siteid = get_config('local_analytics', 'siteid');
         $cleanurl = get_config('local_analytics', 'cleanurl');
         $location = "additionalhtml" . get_config('local_analytics', 'location');
