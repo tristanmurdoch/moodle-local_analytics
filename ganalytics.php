@@ -33,11 +33,10 @@ class local_analytics_ganalytics extends AbstractLocalAnalytics {
         global $CFG;
         $enabled = get_config('local_analytics', 'enabled');
         $siteid = get_config('local_analytics', 'siteid');
-        $trackadmin = get_config('local_analytics', 'trackadmin');
         $cleanurl = get_config('local_analytics', 'cleanurl');
         $location = "additionalhtml" . get_config('local_analytics', 'location');
 
-        if ($enabled && (!is_siteadmin() || $trackadmin)) {
+        if (self::shouldTrack()) {
             $CFG->$location .= "
                 <script type='text/javascript' name='localga'>
                   var _gaq = _gaq || [];

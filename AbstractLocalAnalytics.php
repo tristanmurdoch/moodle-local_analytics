@@ -83,4 +83,18 @@ require_once(dirname(__FILE__) . '/local_analytics_interface.php');
      return $trackurl;
    }
 
+   /**
+    * Whether to track this request.
+    *
+    * @return boolean
+    *   The outcome of our deliberations.
+    */
+   public static function shouldTrack() {
+     if (!is_siteadmin()) {
+       return TRUE;
+     }
+
+     $trackadmin = get_config('local_analytics', 'trackadmin');
+     return $trackadmin;
+   }
  }

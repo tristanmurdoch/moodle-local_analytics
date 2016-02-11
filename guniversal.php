@@ -32,7 +32,6 @@ class local_analytics_guniversal extends AbstractLocalAnalytics {
         global $CFG, $PAGE;
         $enabled = get_config('local_analytics', 'enabled');
         $siteid = get_config('local_analytics', 'siteid');
-        $trackadmin = get_config('local_analytics', 'trackadmin');
         $cleanurl = get_config('local_analytics', 'cleanurl');
         $location = "additionalhtml" . get_config('local_analytics', 'location');
 
@@ -45,7 +44,7 @@ class local_analytics_guniversal extends AbstractLocalAnalytics {
             $addition = "'pageview'";
         }
 
-        if ($enabled && (!is_siteadmin() || $trackadmin)) {
+        if (self::shouldTrack()) {
             $CFG->$location .= "
                 <script>
                 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

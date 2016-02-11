@@ -111,7 +111,6 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
         $imagetrack = get_config('local_analytics', 'imagetrack');
         $siteurl = get_config('local_analytics', 'siteurl');
         $siteid = get_config('local_analytics', 'siteid');
-        $trackadmin = get_config('local_analytics', 'trackadmin');
         $cleanurl = get_config('local_analytics', 'cleanurl');
         $location = "additionalhtml" . get_config('local_analytics', 'location');
 
@@ -128,7 +127,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
                 $doctitle = "";
             }
 
-            if ($enabled && (!is_siteadmin() || $trackadmin)) {
+            if (self::shouldTrack()) {
                 $CFG->$location .= "
     <!-- Start Piwik Code -->
     <script type='text/javascript'>
