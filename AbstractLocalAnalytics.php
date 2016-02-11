@@ -107,6 +107,14 @@ require_once(dirname(__FILE__) . '/local_analytics_interface.php');
    public static function userFullName() {
      global $USER;
      $user = $USER;
+     $is_masquerading = \core\session\manager::is_loggedinas();
+
+     if ($is_masquerading) {
+       $use_real = get_config('local_analytics', 'masquerade_handling');
+       if ($use_real) {
+         $user = \core\session\manager::get_realuser();
+       }
+     }
 
      $real_name = fullname($user);
      return $real_name;
