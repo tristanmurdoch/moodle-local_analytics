@@ -27,6 +27,7 @@
  */
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(__FILE__).'/AbstractLocalAnalytics.php');
 require_once(dirname(__FILE__).'/piwik.php');
 require_once(dirname(__FILE__).'/ganalytics.php');
 require_once(dirname(__FILE__).'/guniversal.php');

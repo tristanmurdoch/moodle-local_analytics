@@ -415,7 +415,7 @@ class local_analytics_testcase extends advanced_testcase {
         $USER = $DB->get_record('user', array('id' => 1));
 
         $ga = new local_analytics_ganalytics();
-        $actual = $ga::trackurl();
+        $actual = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("'/Miscellaneous/Test+course+1/View'", $actual);
     }
@@ -446,7 +446,7 @@ class local_analytics_testcase extends advanced_testcase {
         $USER = $DB->get_record('user', array('id' => 1));
 
         $ga = new local_analytics_ganalytics();
-        $actual = $ga::trackurl();
+        $actual = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("'/Miscellaneous/Test+course+1/Edit'", $actual);
     }
@@ -470,7 +470,7 @@ class local_analytics_testcase extends advanced_testcase {
         $PAGE->context = context_module::instance($this->wiki->cmid);
 
         $ga = new local_analytics_ganalytics();
-        $trackurl = $ga::trackurl();
+        $trackurl = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("'/Miscellaneous/Test+course+1/wiki/Wiki+1'", $trackurl);
     }
@@ -567,7 +567,7 @@ class local_analytics_testcase extends advanced_testcase {
         $USER = $DB->get_record('user', array('id' => 1));
 
         $ga = new local_analytics_guniversal();
-        $actual = $ga::trackurl();
+        $actual = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("'/Miscellaneous/Test+course+1/View'", $actual);
     }
@@ -598,7 +598,7 @@ class local_analytics_testcase extends advanced_testcase {
         $USER = $DB->get_record('user', array('id' => 1));
 
         $ga = new local_analytics_guniversal();
-        $actual = $ga::trackurl();
+        $actual = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("'/Miscellaneous/Test+course+1/Edit'", $actual);
     }
@@ -622,7 +622,7 @@ class local_analytics_testcase extends advanced_testcase {
         $PAGE->context = context_module::instance($this->wiki->cmid);
 
         $guniversal = new local_analytics_guniversal();
-        $trackurl = $guniversal::trackurl();
+        $trackurl = $guniversal::trackurl(TRUE, TRUE);
 
         $this->assertEquals("'/Miscellaneous/Test+course+1/wiki/Wiki+1'", $trackurl);
     }

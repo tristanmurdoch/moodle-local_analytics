@@ -25,51 +25,9 @@
  * @author David Bezemer <info@davidbezemer.nl>, Bas Brands <bmbrands@gmail.com>, Gavin Henrick <gavin@lts.ie>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('local_analytics_interface.php');
+require_once('AbstractLocalAnalytics.php');
 
-class local_analytics_piwik implements local_analytics_interface {
-    static public function trackurl() {
-        global $DB, $PAGE, $COURSE, $SITE;
-        $pageinfo = get_context_info_array($PAGE->context->id);
-        $trackurl = "'";
-
-        // Adds course category name.
-        if (isset($pageinfo[1]->category)) {
-            if ($category = $DB->get_record('course_categories', array (
-                    'id' => $pageinfo[1]->category
-            ))) {
-                $cats = explode("/", $category->path);
-                foreach (array_filter($cats) as $cat) {
-                    if ($categorydepth = $DB->get_record("course_categories", array (
-                            "id" => $cat
-                    ))) {
-                        ;
-                        $trackurl .= $categorydepth->name . '/';
-                    }
-                }
-            }
-        }
-
-        // Adds course full name.
-        if (isset($pageinfo[1]->fullname)) {
-            if (isset($pageinfo[2]->name)) {
-                $trackurl .= $pageinfo[1]->fullname . '/';
-            } else if ($PAGE->user_is_editing()) {
-                $trackurl .= $pageinfo[1]->fullname . '/' . get_string('edit', 'local_analytics');
-            } else {
-                $trackurl .= $pageinfo[1]->fullname . '/' . get_string('view', 'local_analytics');
-            }
-        }
-
-        // Adds activity name.
-        if (isset($pageinfo[2]->name)) {
-            $trackurl .= $pageinfo[2]->modname . '/' . $pageinfo[2]->name;
-        }
-
-        $trackurl .= "'";
-        return $trackurl;
-    }
-
+class local_analytics_piwik extends AbstractLocalAnalytics {
     /**
      * Build a custom variable string.
      *
