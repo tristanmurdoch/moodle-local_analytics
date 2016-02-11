@@ -97,4 +97,18 @@ require_once(dirname(__FILE__) . '/local_analytics_interface.php');
      $trackadmin = get_config('local_analytics', 'trackadmin');
      return $trackadmin;
    }
+
+   /**
+    * Get the user full name to record in tracking, taking account of masquerading if necessary.
+    *
+    * @return string
+    *   The full name to log for the user.
+    */
+   public static function userFullName() {
+     global $USER;
+     $user = $USER;
+
+     $real_name = fullname($user);
+     return $real_name;
+   }
  }

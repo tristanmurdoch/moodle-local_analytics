@@ -90,6 +90,7 @@ class local_analytics_testcase extends advanced_testcase {
         set_config('siteurl', 'somewhere', 'local_analytics');
         set_config('siteid', 2468, 'local_analytics');
         set_config('trackadmin', TRUE, 'local_analytics');
+        set_config('masquerade_handling', TRUE, 'local_analytics');
         set_config('cleanurl', TRUE, 'local_analytics');
         set_config('location', 'header', 'local_analytics');
     }
@@ -195,6 +196,65 @@ class local_analytics_testcase extends advanced_testcase {
         local_analytics_execute();
 
         $this->assertDebuggingCalled();
+    }
+
+    /**
+     * Test that userFullName gives the real user name if the user is not masquerading.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the userFullName function is invoked
+     * AND the user is not masquerading
+     * THEN the returned string should be the full name of the user.
+     *
+     * @test
+     */
+    public function userFullNameGivesRealUserNameIfNotMasquerading() {
+
+      $piwik = new local_analytics_piwik();
+      $actual = $piwik::userFullName();
+      $this->assertEquals('Admin User', $actual);
+    }
+
+    /**
+     * Test that userFullName gives the real user name if masquerade handling is enabled.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the userFullName function is invoked
+     * AND the masquerade_handling config is TRUE
+     * THEN the returned string should be the full name of the admin user.
+     *
+     * @test
+     */
+    public function userFullNameGivesAssumedUserNameIfMasqueradingAndHandlingDisabled() {
+
+      set_config('masquerade_handling', FALSE, 'local_analytics');
+
+      $system_context = context_system::instance(0);
+      \core\session\manager::loginas(1, $system_context);
+
+      $piwik = new local_analytics_piwik();
+      $actual = $piwik::userFullName();
+      $this->assertEquals('Guest user  ', $actual);
+    }
+
+    /**
+     * Test that userFullName gives the masqueraded user name if masquerade handling is disabled.
+     *
+     * GIVEN the local analytics plugin
+     * WHEN the userFullName function is invoked
+     * AND the masquerade_handling config is TRUE
+     * THEN the returned string should be the full name of the admin user.
+     *
+     * @test
+     */
+    public function userFullNameGivesRealUserNameIfMasqueradeHandlingEnabled() {
+
+      $system_context = context_system::instance(0);
+      \core\session\manager::loginas(1, $system_context);
+
+      $piwik = new local_analytics_piwik();
+      $actual = $piwik::userFullName();
+      $this->assertEquals('Admin User', $actual);
     }
 
     /**

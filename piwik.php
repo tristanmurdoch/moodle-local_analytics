@@ -78,7 +78,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
 
         // User Details
         // "John Smith ([user_id])"
-        $customvars .= self::local_get_custom_var_string(1, 'UserName', fullname($USER), $scope);
+        $customvars .= self::local_get_custom_var_string(1, 'UserName', self::userFullName(), $scope);
 
         // User Role
         if (is_siteadmin($USER->id)) {
