@@ -82,6 +82,13 @@ if (is_siteadmin()) {
 	$setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
 	$settings->add($setting);
 
+	$name = 'local_analytics/masquerade_handling';
+	$title = get_string('masquerade_handling', 'local_analytics');
+	$description = get_string('masquerade_handling_desc', 'local_analytics');
+	$default = true;
+	$setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+	$settings->add($setting);
+
 	$name = 'local_analytics/cleanurl';
 	$title = get_string('cleanurl', 'local_analytics');
 	$description = get_string('cleanurl_desc', 'local_analytics');
@@ -104,10 +111,4 @@ if (is_siteadmin()) {
 	$setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
 	$settings->add($setting);
 
-	$name = 'local_analytics/masquerade_handling';
-	$title = get_string('masquerade_handling', 'local_analytics');
-	$description = get_string('masquerade_handling_desc', 'local_analytics');
-	$default = true;
-	$setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
-	$settings->add($setting);
 }
