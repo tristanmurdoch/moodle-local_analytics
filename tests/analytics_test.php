@@ -319,14 +319,14 @@ class local_analytics_testcase extends advanced_testcase {
      * @test
      */
     public function piwikCustomMoodleVarsGenerationProducesExpectedOutputForNonAdmin() {
-        global $PAGE, $COURSE, $USER, $DB;
+        global $PAGE, $COURSE, $DB;
 
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
         $PAGE->context = context_course::instance($COURSE->id);
 
-        $USER = $DB->get_record('user', array('id' => 1));
+        $this->setGuestUser();
 
         $piwik = new local_analytics_piwik();
         $actual = $piwik::local_insert_custom_moodle_vars();
