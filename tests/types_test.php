@@ -55,7 +55,7 @@ class mock_page {
 /**
  * Class local_analytics_testcase
  */
-class local_analytics_testcase extends advanced_testcase {
+class local_analytics_types_testcase extends \advanced_testcase {
     /** @var stdClass Keeps course object */
     private $course;
 
