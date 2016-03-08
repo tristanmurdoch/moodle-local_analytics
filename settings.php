@@ -68,6 +68,10 @@ if (is_siteadmin()) {
 	$setting = new admin_setting_configtext($name, $title, $description, $default);
 	$settings->add($setting);
 
+	// Get a list of the dimension values that may be used.
+	require_once(__DIR__ . '/dimensions.php');
+	$plugins = \local_analytics\dimensions::enumerate_plugins();
+
 	$name = 'local_analytics/imagetrack';
 	$title = get_string('imagetrack', 'local_analytics');
 	$description = get_string('imagetrack_desc', 'local_analytics');

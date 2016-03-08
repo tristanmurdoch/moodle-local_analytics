@@ -25,7 +25,7 @@
  * @author     David Bezemer
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
+
 $string['pluginname'] = 'Analytics';
 $string['analytics'] = 'Analytics';
 $string['analyticsdesc'] = 'Choose the type of Analytics you want to insert';
@@ -56,3 +56,5 @@ $string['footer'] = 'Footer';
 
 $string['piwik_number_dimensions'] = 'Number of Piwik dimensions used';
 $string['piwik_number_dimensions_desc'] = 'The number of custom dimensions used for Piwik';
+
+$string['course_name'] = 'Course name';
