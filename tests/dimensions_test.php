@@ -63,9 +63,9 @@ function scandir($directory) {
 }
 
 /**
- * Class local_analytics_dimensions_infrastructure_testcase
+ * Class local_analytics_dimensions_testcase
  */
-class local_analytics_dimensions_infrastructure_testcase extends \advanced_testcase {
+class local_analytics_dimensions_testcase extends \advanced_testcase {
 
 	/**
 	 * Setup test data.
@@ -115,6 +115,27 @@ class local_analytics_dimensions_infrastructure_testcase extends \advanced_testc
 
 		foreach($actual as $name => $plugin) {
 			$this->assertInstanceOf($name, $plugin);
+		}
+	}
+
+	/**
+	 * Test that instantiated plugins have expected attributes.
+	 *
+	 * GIVEN the array of plugin instances returned by instantiate_plugins
+	 * WHEN each is checked
+	 * THEN it should have a value function
+	 * AND a name that matches a language string.
+	 *
+	 * @test
+	 */
+	public function instantiatedPluginsHaveExpectedAttributes() {
+		should_use_mock_scandir(FALSE);
+
+		$actual = dimensions::instantiate_plugins();
+
+		foreach($actual as $name => $plugin) {
+			$this->assertObjectHasAttribute($name, $plugin);
+			$this->assertTrue(is_callable("$plugin->value()"));
 		}
 	}
 
