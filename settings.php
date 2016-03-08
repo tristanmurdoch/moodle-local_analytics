@@ -61,6 +61,13 @@ if (is_siteadmin()) {
 	$setting = new admin_setting_configtext($name, $title, $description, $default);
 	$settings->add($setting);
 
+	$name = 'local_analytics/piwik_number_dimensions';
+	$title = get_string('piwik_number_dimensions', 'local_analytics');
+	$description = get_string('piwik_number_dimensions_desc', 'local_analytics');
+	$default = '5';
+	$setting = new admin_setting_configtext($name, $title, $description, $default);
+	$settings->add($setting);
+
 	$name = 'local_analytics/imagetrack';
 	$title = get_string('imagetrack', 'local_analytics');
 	$description = get_string('imagetrack_desc', 'local_analytics');

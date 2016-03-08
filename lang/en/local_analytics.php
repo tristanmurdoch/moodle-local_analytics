@@ -53,3 +53,6 @@ $string['masquerade_handling_desc'] = 'Whether to track users who are masqueradi
 $string['head'] = 'Header';
 $string['topofbody'] = 'Top of body';
 $string['footer'] = 'Footer';
+
+$string['piwik_number_dimensions'] = 'Number of Piwik dimensions used';
+$string['piwik_number_dimensions_desc'] = 'The number of custom dimensions used for Piwik';
