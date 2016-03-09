@@ -7,39 +7,39 @@
 namespace local_analytics;
 
 class dimensions {
-	/**
-	 * The array of class instances.
-	 */
-	static private $dimension_instances = null;
+    /**
+     * The array of class instances.
+     */
+    static private $dimension_instances = null;
 
-	/**
-	 * Find class instances and populate the array
-	 *
-	 * @return array of strings
-	 *   A list of the names of files containing plugins.
-	 */
-	static public function enumerate_plugins()
-	{
-		$dir = dirname(__FILE__) . '/dimensions';
+    /**
+     * Find class instances and populate the array
+     *
+     * @return array of strings
+     *   A list of the names of files containing plugins.
+     */
+    static public function enumerate_plugins()
+    {
+        $dir = dirname(__FILE__) . '/dimensions';
 
-		$list_of_files = scandir($dir);
-		foreach($list_of_files as $index => $entry) {
-			if ($entry == '.' || $entry == '..' || substr($entry, -4) != '.php') {
-				unset($list_of_files[$index]);
-			}
-		}
+        $list_of_files = scandir($dir);
+        foreach($list_of_files as $index => $entry) {
+            if ($entry == '.' || $entry == '..' || substr($entry, -4) != '.php') {
+                unset($list_of_files[$index]);
+            }
+        }
 
-		return $list_of_files;
-	}
+        return $list_of_files;
+    }
 
-	/**
-	 * Instantiate plugins and populate the array.
-	 *
-	 * @return array
-	 *   An array keys by plugin filename, with values being class instances.
-	 */
-	static public function instantiate_plugins()
-	{
+    /**
+     * Instantiate plugins and populate the array.
+     *
+     * @return array
+     *   An array keys by plugin filename, with values being class instances.
+     */
+    static public function instantiate_plugins()
+    {
         if (is_null(self::$dimension_instances)) {
             $list_of_files = self::enumerate_plugins();
 
@@ -64,8 +64,8 @@ class dimensions {
             self::$dimension_instances = $plugins;
         }
 
-		return self::$dimension_instances;
-	}
+        return self::$dimension_instances;
+    }
 
     /**
      * Get plugin options list.
