@@ -10,7 +10,7 @@ class dimensions {
 	/**
 	 * The array of class instances.
 	 */
-	static private $dimension_instances;
+	static private $dimension_instances = null;
 
 	/**
 	 * Find class instances and populate the array
@@ -34,30 +34,37 @@ class dimensions {
 
 	/**
 	 * Instantiate plugins and populate the array.
+	 *
+	 * @return array
+	 *   An array keys by plugin filename, with values being class instances.
 	 */
 	static public function instantiate_plugins()
 	{
-		$list_of_files = self::enumerate_plugins();
+        if (is_null(self::$dimension_instances)) {
+            $list_of_files = self::enumerate_plugins();
 
-		$plugins = array();
+            $plugins = array();
 
-		foreach($list_of_files as $index => $entry) {
-			require_once(__DIR__ . '/dimensions/' . $entry);
+            foreach ($list_of_files as $index => $entry) {
+                require_once(__DIR__ . '/dimensions/' . $entry);
 
-			$class_name = substr($entry, 0, -4);
+                $class_name = substr($entry, 0, -4);
 
-			// Check the expected class exists.
-			if (!class_exists('\local\analytics\dimensions\\' . $class_name, FALSE)) {
-				debugging("Local Analytics: File ${entry} in the dimensions directory doesn't define a class named ${class_name}",
-					DEBUG_DEVELOPER);
-				continue;
-			}
+                // Check the expected class exists.
+                if (!class_exists('\local\analytics\dimensions\\' . $class_name, FALSE)) {
+                    debugging("Local Analytics: File ${entry} in the dimensions directory doesn't define a class named ${class_name}",
+                        DEBUG_DEVELOPER);
+                    continue;
+                }
 
-			$class_name = '\local\analytics\dimensions\\' . $class_name;
-			$plugins[$class_name] = new $class_name;
-		}
+                $class_name = '\local\analytics\dimensions\\' . $class_name;
+                $plugins[$class_name] = new $class_name;
+            }
 
-		self::$dimension_instances = $plugins;
-		return $plugins;
+            self::$dimension_instances = $plugins;
+        }
+
+		return self::$dimension_instances;
 	}
+
 }
