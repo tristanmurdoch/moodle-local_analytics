@@ -57,4 +57,7 @@ $string['footer'] = 'Footer';
 $string['piwik_number_dimensions'] = 'Number of Piwik dimensions used';
 $string['piwik_number_dimensions_desc'] = 'The number of custom dimensions used for Piwik';
 
+$string['piwikdimension'] = 'Dimension {$a}';
+$string['piwikdimensiondesc'] = 'An optional value for dimension {$a}';
+
 $string['course_name'] = 'Course name';

@@ -70,7 +70,16 @@ if (is_siteadmin()) {
 
 	// Get a list of the dimension values that may be used.
 	require_once(__DIR__ . '/dimensions.php');
-	$plugins = \local_analytics\dimensions::enumerate_plugins();
+    $choices = \local_analytics\dimensions::setting_options();
+    $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions', 5);
+
+    for ($i = 1; $i <= $num_dimensions; $i++) {
+        $name = 'local_analytics/piwikdimension' . $i;
+        $title = get_string('piwikdimension' , 'local_analytics', $i);
+        $description = get_string('piwikdimensiondesc', 'local_analytics', $i);
+        $setting = new admin_setting_configselect($name, $title, $description, '', $choices);
+        $settings->add($setting);
+    }
 
 	$name = 'local_analytics/imagetrack';
 	$title = get_string('imagetrack', 'local_analytics');
