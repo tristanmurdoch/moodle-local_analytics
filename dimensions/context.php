@@ -6,7 +6,9 @@
 
 namespace local\analytics\dimensions;
 
-class context {
+require_once dirname(__DIR__) . '/dimension_interface.php';
+
+class context implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */
