@@ -61,3 +61,4 @@ $string['piwikdimension'] = 'Dimension {$a}';
 $string['piwikdimensiondesc'] = 'An optional value for dimension {$a}';
 
 $string['course_full_name'] = 'Course full name';
+$string['user_name'] = 'User name';
