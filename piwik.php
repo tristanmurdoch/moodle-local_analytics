@@ -67,7 +67,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
      * - http://piwik.org/docs/custom-variables/
      * https://piwik.org/faq/general/faq_21117/
      */
-    static public function local_insert_custom_moodle_vars() {
+    static public function insert_custom_moodle_variables() {
         global $DB, $PAGE, $COURSE, $SITE, $USER;
         $customvars = "";
         $context = context_course::instance($COURSE->id);
@@ -103,6 +103,38 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
         // Max 5 Variables
 
         return $customvars;
+    }
+
+    /**
+     * see http://piwik.org/blog/2012/10/using-custom-variables-in-piwik-tutorial/
+     *
+     * There can be up to 5 Custom Variables in the piwik callback.
+     * These are dynamically defined
+     *
+     * Note, in the future this will be replaced with 'Custom Dimensions'
+     * - http://piwik.org/docs/custom-variables/
+     * https://piwik.org/faq/general/faq_21117/
+     */
+    static public function insert_custom_moodle_dimensions() {
+    }
+
+    /**
+     * see http://piwik.org/blog/2012/10/using-custom-variables-in-piwik-tutorial/
+     *
+     * There can be up to 5 Custom Variables in the piwik callback.
+     * These are dynamically defined
+     *
+     * Note, in the future this will be replaced with 'Custom Dimensions'
+     * - http://piwik.org/docs/custom-variables/
+     * https://piwik.org/faq/general/faq_21117/
+     */
+    static public function local_insert_custom_moodle_vars() {
+        if (get_config('local_analytics', 'piwikusedimensions')) {
+            return self::insert_custom_moodle_dimensions();
+        }
+        else {
+            return self::insert_custom_moodle_variables();
+        }
     }
 
     static public function insert_tracking() {

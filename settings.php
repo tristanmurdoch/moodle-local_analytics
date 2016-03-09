@@ -61,6 +61,14 @@ if (is_siteadmin()) {
     $setting = new admin_setting_configtext($name, $title, $description, $default);
     $settings->add($setting);
 
+
+    $name = 'local_analytics/piwikusedimensions';
+    $title = get_string('piwikusedimensions', 'local_analytics');
+    $description = get_string('piwikusedimensions_desc', 'local_analytics');
+    $default = true;
+    $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+    $settings->add($setting);
+
     $name = 'local_analytics/piwik_number_dimensions';
     $title = get_string('piwik_number_dimensions', 'local_analytics');
     $description = get_string('piwik_number_dimensions_desc', 'local_analytics');

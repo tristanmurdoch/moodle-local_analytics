@@ -54,6 +54,9 @@ $string['head'] = 'Header';
 $string['topofbody'] = 'Top of body';
 $string['footer'] = 'Footer';
 
+$string['piwikusedimensions'] = 'Piwik dimensions';
+$string['piwikusedimensions_desc'] = 'Use dimensions for Piwik';
+
 $string['piwik_number_dimensions'] = 'Number of Piwik dimensions used';
 $string['piwik_number_dimensions_desc'] = 'The number of custom dimensions used for Piwik';
 
