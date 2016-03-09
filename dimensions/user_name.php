@@ -6,7 +6,9 @@
 
 namespace local\analytics\dimensions;
 
-class user_name {
+require_once dirname(__DIR__) . '/dimension_interface.php';
+
+class user_name implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */

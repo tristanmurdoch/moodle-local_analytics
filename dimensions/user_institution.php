@@ -8,11 +8,11 @@ namespace local\analytics\dimensions;
 
 require_once dirname(__DIR__) . '/dimension_interface.php';
 
-class user_role implements dimension_interface {
+class user_institution implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */
-    static $name = 'user_role';
+    static $name = 'user_institution';
 
     /**
      * Get the value for js to send.
