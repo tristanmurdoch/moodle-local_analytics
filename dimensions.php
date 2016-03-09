@@ -67,4 +67,29 @@ class dimensions {
 		return self::$dimension_instances;
 	}
 
+    /**
+     * Get plugin options list.
+     *
+     * @return array
+     *   An array of items for a select combo.
+     */
+    static public function setting_options()
+    {
+        static $result = null;
+
+        if (is_null($result)) {
+            $plugins = self::instantiate_plugins();
+
+            $result = array('' => '');
+
+            foreach ($plugins as $file => $plugin) {
+                $lang_string = get_string($plugin::$name, 'local_analytics');
+                $result[$plugin::$name] = $lang_string;
+            }
+        }
+
+        return $result;
+
+    }
+
 }
