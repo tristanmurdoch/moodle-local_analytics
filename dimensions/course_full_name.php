@@ -18,7 +18,7 @@ class course_full_name {
      * @return mixed
      *   The value of the dimension.
      */
-    public function get_value() {
+    public function value() {
         global $COURSE;
 
         return $COURSE->fullname;
