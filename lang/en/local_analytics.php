@@ -60,4 +60,4 @@ $string['piwik_number_dimensions_desc'] = 'The number of custom dimensions used 
 $string['piwikdimension'] = 'Dimension {$a}';
 $string['piwikdimensiondesc'] = 'An optional value for dimension {$a}';
 
-$string['course_name'] = 'Course name';
+$string['course_full_name'] = 'Course full name';
