@@ -30,14 +30,14 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../dimensions.php');
 
-function should_use_mock_scandir($set = NULL) {
-	static $use_mock_scandir = TRUE;
+function should_use_mock_scandir($set = null) {
+    static $use_mock_scandir = true;
 
-	if (!is_null($set)) {
-		$use_mock_scandir = $set;
-	}
+    if (!is_null($set)) {
+        $use_mock_scandir = $set;
+    }
 
-	return $use_mock_scandir;
+    return $use_mock_scandir;
 }
 
 /**
@@ -50,93 +50,94 @@ function should_use_mock_scandir($set = NULL) {
  *   The list of files found.
  */
 function scandir($directory) {
-	if (should_use_mock_scandir()) {
-		return array(
-			'.',
-			'..',
-			'foo.text',
-			'bar.php',
-		);
-	} else {
-		return \scandir($directory);
-	}
+    if (should_use_mock_scandir()) {
+        return array(
+            '.',
+            '..',
+            'foo.text',
+            'bar.php',
+        );
+    } else {
+        return \scandir($directory);
+    }
 }
 
 /**
  * Class local_analytics_dimensions_testcase
  */
-class local_analytics_dimensions_testcase extends \advanced_testcase {
+class local_analytics_dimensions_testcase extends \advanced_testcase
+{
 
-	/**
-	 * Setup test data.
-	 */
-	public function setUp() {
-		global $CFG;
+    /**
+     * Setup test data.
+     */
+    public function setUp() {
+        global $CFG;
 
-		$this->resetAfterTest();
-		$this->setAdminUser();
+        $this->resetAfterTest();
+        $this->setAdminUser();
 
 // 		set_config('location', 'header', 'local_analytics');
-	}
+    }
 
-	/**
-	 * Test that enumerate_plugins filters non php files out.
-	 *
-	 * GIVEN the dimensions class
-	 * WHEN its enumerate_plugins function is invoked
-	 * THEN the result should be a list of files in the dimensions directory
-	 * AND the '.' and '..' files should be excluded
-	 * AND files not ending in '.php' should be excluded
-	 *
-	 * @test
-	 */
-	public function enumeratePluginsFiltersScanDirAsExpected() {
-		$actual = dimensions::enumerate_plugins();
+    /**
+     * Test that enumerate_plugins filters non php files out.
+     *
+     * GIVEN the dimensions class
+     * WHEN its enumerate_plugins function is invoked
+     * THEN the result should be a list of files in the dimensions directory
+     * AND the '.' and '..' files should be excluded
+     * AND files not ending in '.php' should be excluded
+     *
+     * @test
+     */
+    public function enumeratePluginsFiltersScanDirAsExpected() {
+        $actual = dimensions::enumerate_plugins();
 
-		// 3 because it's the fourth element (zero indexed) in the scandir result.
-		$expected = array(3 => 'bar.php');
+        // 3 because it's the fourth element (zero indexed) in the scandir result.
+        $expected = array(3 => 'bar.php');
 
-		$this->assertSame($expected, $actual);
-	}
+        $this->assertSame($expected, $actual);
+    }
 
-	/**
-	 * Test that instantiate_plugins can instantiate all plugins.
-	 *
-	 * GIVEN the dimensions class
-	 * WHEN its instantiate_plugins function is invoked
-	 * THEN the result should be an array of plugin instances
-	 *
-	 * @test
-	 */
-	public function instantiatePluginsCanReturnAnArrayOfPlugins() {
-		should_use_mock_scandir(FALSE);
+    /**
+     * Test that instantiate_plugins can instantiate all plugins.
+     *
+     * GIVEN the dimensions class
+     * WHEN its instantiate_plugins function is invoked
+     * THEN the result should be an array of plugin instances
+     *
+     * @test
+     */
+    public function instantiatePluginsCanReturnAnArrayOfPlugins() {
+        should_use_mock_scandir(false);
 
-		$actual = dimensions::instantiate_plugins();
+        $actual = dimensions::instantiate_plugins();
 
-		foreach($actual as $name => $plugin) {
-			$this->assertInstanceOf($name, $plugin);
-		}
-	}
+        foreach ($actual as $name => $plugin) {
+            $this->assertInstanceOf($name, $plugin);
+        }
+    }
 
-	/**
-	 * Test that instantiated plugins have expected attributes.
-	 *
-	 * GIVEN the array of plugin instances returned by instantiate_plugins
-	 * WHEN each is checked
-	 * THEN it should have a value function
-	 * AND a name that matches a language string.
-	 *
-	 * @test
-	 */
-	public function instantiatedPluginsHaveExpectedAttributes() {
-		should_use_mock_scandir(FALSE);
+    /**
+     * Test that instantiated plugins have expected attributes.
+     *
+     * GIVEN the array of plugin instances returned by instantiate_plugins
+     * WHEN each is checked
+     * THEN it should have a value function
+     * AND a name that matches a language string.
+     *
+     * @test
+     */
+    public function instantiatedPluginsHaveExpectedAttributes() {
+        should_use_mock_scandir(false);
 
-		$actual = dimensions::instantiate_plugins();
+        $actual = dimensions::instantiate_plugins();
 
-		foreach($actual as $name => $plugin) {
-			$this->assertObjectHasAttribute($name, $plugin);
-			$this->assertTrue(is_callable("$plugin->value()"));
-		}
-	}
+        foreach ($actual as $name => $plugin) {
+            $this->assertObjectHasAttribute($name, $plugin);
+            $this->assertTrue(is_callable("$plugin->value()"));
+        }
+    }
 
 }
