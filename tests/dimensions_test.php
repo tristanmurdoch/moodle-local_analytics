@@ -26,6 +26,8 @@
 
 namespace local_analytics;
 
+use local\analytics\dimensions\dimension_interface;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../dimensions.php');
@@ -124,19 +126,17 @@ class local_analytics_dimensions_testcase extends \advanced_testcase
      *
      * GIVEN the array of plugin instances returned by instantiate_plugins
      * WHEN each is checked
-     * THEN it should have a value function
-     * AND a name that matches a language string.
+     * THEN it should implement the dimension interface.
      *
      * @test
      */
-    public function instantiatedPluginsHaveExpectedAttributes() {
+    public function instantiatedPluginsImplementInterface() {
         should_use_mock_scandir(false);
 
         $actual = dimensions::instantiate_plugins();
 
         foreach ($actual as $name => $plugin) {
-            $this->assertObjectHasAttribute($name, $plugin);
-            $this->assertTrue(is_callable("$plugin->value()"));
+            $this->assertTrue($plugin instanceOf dimension_interface);
         }
     }
 
