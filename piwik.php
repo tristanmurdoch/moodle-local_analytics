@@ -26,6 +26,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once('AbstractLocalAnalytics.php');
+require_once ('dimensions.php');
 
 class local_analytics_piwik extends AbstractLocalAnalytics {
     /**
@@ -116,6 +117,30 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
      * https://piwik.org/faq/general/faq_21117/
      */
     static public function insert_custom_moodle_dimensions() {
+        $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions', 5);
+        $plugins = \local_analytics\dimensions::instantiate_plugins();
+
+        $customvars = '';
+
+        for ($i = 1; $i <= $num_dimensions; $i++) {
+            $name = 'piwikdimension' . $i;
+            $dimension = get_config('local_analytics', $name);
+
+            if ($dimension == '') {
+                continue;
+            }
+
+            $key = '\local\analytics\dimensions\\' . $dimension;
+
+            if (!array_key_exists($key, $plugins)) {
+                debugging("Local Analytics Piwik Dimension Plugin '${dimension}' is missing.", DEBUG_NORMAL);
+                continue;
+            }
+
+            $customvars .= self::local_get_custom_var_string($i, $dimension, $plugins[$key]->value(), 'page');
+        }
+
+        return $customvars;
     }
 
     /**
