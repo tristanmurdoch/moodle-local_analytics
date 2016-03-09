@@ -67,3 +67,4 @@ $string['course_full_name'] = 'Course full name';
 $string['context'] = 'Context';
 $string['user_name'] = 'User name';
 $string['user_role'] = 'User role';
+$string['user_institution'] = 'User institution';
