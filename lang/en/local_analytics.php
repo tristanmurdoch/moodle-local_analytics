@@ -57,8 +57,8 @@ $string['footer'] = 'Footer';
 $string['piwikusedimensions'] = 'Piwik custom dimensions';
 $string['piwikusedimensions_desc'] = 'Use custom dimensions for Piwik rather than custom variables.';
 
-$string['piwik_number_dimensions'] = 'Number of Piwik dimensions used';
-$string['piwik_number_dimensions_desc'] = 'The number of custom dimensions used for Piwik';
+$string['piwik_number_dimensions'] = 'Number of Piwik {$a->custom}dimensions used for {$a->scope} scope';
+$string['piwik_number_dimensions_desc'] = 'The number of {$a->custom}dimensions used for Piwik for {$a->scope} scope.';
 
 $string['piwikdimension'] = '{$a->id} dimension for scope \'{$a->scope}\'';
 $string['piwikdimensiondesc'] = 'An optional value for {$a->id} dimension in scope \'{$a->scope}\'';

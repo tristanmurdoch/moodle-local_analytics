@@ -61,7 +61,6 @@ if (is_siteadmin()) {
     $setting = new admin_setting_configtext($name, $title, $description, $default);
     $settings->add($setting);
 
-
     $name = 'local_analytics/piwikusedimensions';
     $title = get_string('piwikusedimensions', 'local_analytics');
     $description = get_string('piwikusedimensions_desc', 'local_analytics');
@@ -69,22 +68,27 @@ if (is_siteadmin()) {
     $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
     $settings->add($setting);
 
-    $name = 'local_analytics/piwik_number_dimensions';
-    $title = get_string('piwik_number_dimensions', 'local_analytics');
-    $description = get_string('piwik_number_dimensions_desc', 'local_analytics');
-    $default = '5';
-    $setting = new admin_setting_configtext($name, $title, $description, $default);
-    $settings->add($setting);
-
     // Get a list of the dimension values that may be used.
     require_once(__DIR__ . '/dimensions.php');
 
     // Find out what scopes are supported (making it future proof)
     $plugins = \local_analytics\dimensions::instantiate_plugins();
-    $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions', 5);
 
     foreach ($plugins as $scope => $scope_plugins) {
+        $lang_args = new \stdClass();
+        $lang_args->scope = $scope;
+        $lang_args->custom = ($scope == 'visit') ? 'custom ' : '';
+
+        $name = 'local_analytics/piwik_number_dimensions_' . $scope;
+        $title = get_string('piwik_number_dimensions', 'local_analytics', $lang_args);
+        $description = get_string('piwik_number_dimensions_desc', 'local_analytics', $lang_args);
+        $default = '5';
+
+        $setting = new admin_setting_configtext($name, $title, $description, $default);
+        $settings->add($setting);
+
         $choices = \local_analytics\dimensions::setting_options($scope);
+        $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions_' . $scope, 5);
 
         for ($i = 1; $i <= $num_dimensions; $i++) {
             // Get an ordinal string to try to make the description less ambiguous.
