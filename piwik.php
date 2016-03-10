@@ -142,7 +142,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
     static private function get_dimension_values($scope, $index) {
         $plugins = \local_analytics\dimensions::instantiate_plugins();
 
-        $name = 'piwikdimension' . $scope . '_' . $index;
+        $name = 'piwikdimensioncontent_' . $scope . '_' . $index;
         $dimension = get_config('local_analytics', $name);
 
         if ($dimension == '') {
@@ -157,7 +157,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
             return null;
         }
 
-        $name = 'piwikdimensionid_action_' . $index;
+        $name = 'piwikdimensionid_' . $scope . '_' . $index;
         $dimensionid = get_config('local_analytics', $name);
 
         if ($dimensionid == '') {
@@ -185,7 +185,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
      *   An array of the details to pass to the renderer.
      */
     static public function dimensions_for_scope($scope) {
-        $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions', 5);
+        $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions_' . $scope, 5);
 
         $result = array();
 
