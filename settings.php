@@ -40,7 +40,7 @@ if (is_siteadmin()) {
     $settings->add($setting);
 
     $name = 'local_analytics/analytics';
-    $title = get_string('analytics' , 'local_analytics');
+    $title = get_string('analytics', 'local_analytics');
     $description = get_string('analyticsdesc', 'local_analytics');
     $ganalytics = get_string('ganalytics', 'local_analytics');
     $guniversal = get_string('guniversal', 'local_analytics');
@@ -78,15 +78,24 @@ if (is_siteadmin()) {
 
     // Get a list of the dimension values that may be used.
     require_once(__DIR__ . '/dimensions.php');
-    $choices = \local_analytics\dimensions::setting_options();
+
+    // Find out what scopes are supported (making it future proof)
+    $plugins = \local_analytics\dimensions::instantiate_plugins();
     $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions', 5);
 
-    for ($i = 1; $i <= $num_dimensions; $i++) {
-        $name = 'local_analytics/piwikdimension' . $i;
-        $title = get_string('piwikdimension' , 'local_analytics', $i);
-        $description = get_string('piwikdimensiondesc', 'local_analytics', $i);
-        $setting = new admin_setting_configselect($name, $title, $description, '', $choices);
-        $settings->add($setting);
+    foreach ($plugins as $scope => $scope_plugins) {
+        $choices = \local_analytics\dimensions::setting_options($scope);
+
+        for ($i = 1; $i <= $num_dimensions; $i++) {
+            $name = 'local_analytics/piwikdimension' . $scope . '_' . $i;
+            $lang_args = new \stdClass();
+            $lang_args->id = $i;
+            $lang_args->scope = $scope;
+            $title = get_string('piwikdimension', 'local_analytics', $lang_args);
+            $description = get_string('piwikdimensiondesc', 'local_analytics', $lang_args);
+            $setting = new admin_setting_configselect($name, $title, $description, '', $choices);
+            $settings->add($setting);
+        }
     }
 
     $name = 'local_analytics/imagetrack';
@@ -125,7 +134,7 @@ if (is_siteadmin()) {
     $settings->add($setting);
 
     $name = 'local_analytics/location';
-    $title = get_string('location' , 'local_analytics');
+    $title = get_string('location', 'local_analytics');
     $description = get_string('locationdesc', 'local_analytics');
     $head = get_string('head', 'local_analytics');
     $topofbody = get_string('topofbody', 'local_analytics');
