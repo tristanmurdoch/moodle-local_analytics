@@ -145,8 +145,9 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
 
         $customvars = '';
 
-        for ($i = 1; $i <= $num_dimensions; $i++) {
-            $name = 'piwikdimension' . $i;
+        foreach ($plugins as $scope => $scope_plugins) {
+            for ($i = 1; $i <= $num_dimensions; $i++) {
+                $name = 'piwikdimension' . $scope . '_' . $i;
                 $dimension = get_config('local_analytics', $name);
 
                 if ($dimension == '') {
@@ -155,12 +156,14 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
 
                 $key = '\local\analytics\dimensions\\' . $dimension;
 
-            if (!array_key_exists($key, $plugins)) {
+                if (!array_key_exists($key, $scope_plugins)) {
                     debugging("Local Analytics Piwik Dimension Plugin '${dimension}' is missing.", DEBUG_NORMAL);
                     continue;
                 }
 
-            $customvars .= self::local_get_custom_var_string($i, $dimension, $plugins[$key]->value(), 'page');
+                $customvars .= self::local_get_custom_dimension_string($i, $dimension, $scope_plugins[$key]->value(),
+                    $scope);
+            }
         }
 
         return $customvars;
