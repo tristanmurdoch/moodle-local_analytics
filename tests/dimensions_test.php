@@ -114,10 +114,12 @@ class local_analytics_dimensions_testcase extends \advanced_testcase
     public function instantiatePluginsCanReturnAnArrayOfPlugins() {
         should_use_mock_scandir(false);
 
-        $actual = dimensions::instantiate_plugins();
+        $plugins = dimensions::instantiate_plugins();
 
-        foreach ($actual as $name => $plugin) {
-            $this->assertInstanceOf($name, $plugin);
+        foreach ($plugins as $scope => $scope_plugins) {
+            foreach ($scope_plugins as $name => $plugin) {
+                $this->assertInstanceOf($name, $plugin);
+            }
         }
     }
 
@@ -133,10 +135,12 @@ class local_analytics_dimensions_testcase extends \advanced_testcase
     public function instantiatedPluginsImplementInterface() {
         should_use_mock_scandir(false);
 
-        $actual = dimensions::instantiate_plugins();
+        $plugins = dimensions::instantiate_plugins();
 
-        foreach ($actual as $name => $plugin) {
-            $this->assertTrue($plugin instanceOf dimension_interface);
+        foreach ($plugins as $scope => $scope_plugins) {
+            foreach ($scope_plugins as $name => $plugin) {
+                $this->assertTrue($plugin instanceOf dimension_interface);
+            }
         }
     }
 
