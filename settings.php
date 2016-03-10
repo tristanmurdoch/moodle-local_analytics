@@ -87,10 +87,19 @@ if (is_siteadmin()) {
         $choices = \local_analytics\dimensions::setting_options($scope);
 
         for ($i = 1; $i <= $num_dimensions; $i++) {
+            // Get an ordinal string to try to make the description less ambiguous.
+            // (I could see someone thinking 'Dimension 1' means Piwik ID 1.
+            // Algo from http://stackoverflow.com/questions/3109978/display-numbers-with-ordinal-suffix-in-php
+            $ends = array('th','st','nd','rd','th','th','th','th','th','th');
+            if (($i %100) >= 11 && ($i%100) <= 13)
+                $ordinal = $i. 'th';
+            else
+                $ordinal = $i. $ends[$i % 10];
+
             // A field for entering the dimension ID
             $name = 'local_analytics/piwikdimensionid_' . $scope . '_' . $i;
             $lang_args = new \stdClass();
-            $lang_args->id = $i;
+            $lang_args->id = $ordinal;
             $lang_args->scope = $scope;
             $title = get_string('piwikdimensionid', 'local_analytics', $lang_args);
             $description = get_string('piwikdimensionid_desc', 'local_analytics', $lang_args);
@@ -100,7 +109,7 @@ if (is_siteadmin()) {
             // And one for picking what content is used.
             $name = 'local_analytics/piwikdimensioncontent_' . $scope . '_' . $i;
             $lang_args = new \stdClass();
-            $lang_args->id = $i;
+            $lang_args->id = $ordinal;
             $lang_args->scope = $scope;
             $title = get_string('piwikdimension', 'local_analytics', $lang_args);
             $description = get_string('piwikdimensiondesc', 'local_analytics', $lang_args);
