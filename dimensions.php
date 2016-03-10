@@ -6,7 +6,8 @@
 
 namespace local_analytics;
 
-class dimensions {
+class dimensions
+{
     /**
      * The array of class instances.
      */
@@ -18,12 +19,11 @@ class dimensions {
      * @return array of strings
      *   A list of the names of files containing plugins.
      */
-    static public function enumerate_plugins()
-    {
+    static public function enumerate_plugins() {
         $dir = dirname(__FILE__) . '/dimensions';
 
         $list_of_files = scandir($dir);
-        foreach($list_of_files as $index => $entry) {
+        foreach ($list_of_files as $index => $entry) {
             if ($entry == '.' || $entry == '..' || substr($entry, -4) != '.php') {
                 unset($list_of_files[$index]);
             }
@@ -36,10 +36,9 @@ class dimensions {
      * Instantiate plugins and populate the array.
      *
      * @return array
-     *   An array keys by plugin filename, with values being class instances.
+     *   An array keyed by plugin scope and class, with values being class instances.
      */
-    static public function instantiate_plugins()
-    {
+    static public function instantiate_plugins() {
         if (is_null(self::$dimension_instances)) {
             $list_of_files = self::enumerate_plugins();
 
@@ -51,14 +50,20 @@ class dimensions {
                 $class_name = substr($entry, 0, -4);
 
                 // Check the expected class exists.
-                if (!class_exists('\local\analytics\dimensions\\' . $class_name, FALSE)) {
+                if (!class_exists('\local\analytics\dimensions\\' . $class_name, false)) {
                     debugging("Local Analytics: File ${entry} in the dimensions directory doesn't define a class named ${class_name}",
                         DEBUG_DEVELOPER);
                     continue;
                 }
 
                 $class_name = '\local\analytics\dimensions\\' . $class_name;
-                $plugins[$class_name] = new $class_name;
+                $instance = new $class_name;
+                $scope = $instance::$scope;
+                if (!array_key_exists($scope, $plugins)) {
+                    $plugins[$scope] = array();
+                }
+
+                $plugins[$scope][$class_name] = $instance;
             }
 
             self::$dimension_instances = $plugins;
@@ -70,11 +75,13 @@ class dimensions {
     /**
      * Get plugin options list.
      *
+     * @param string $scope_requested
+     *   The scope by which to filter results.
+     *
      * @return array
      *   An array of items for a select combo.
      */
-    static public function setting_options()
-    {
+    static public function setting_options($scope_requested) {
         static $result = null;
 
         if (is_null($result)) {
@@ -82,13 +89,15 @@ class dimensions {
 
             $result = array('' => '');
 
-            foreach ($plugins as $file => $plugin) {
-                $lang_string = get_string($plugin::$name, 'local_analytics');
-                $result[$plugin::$name] = $lang_string;
+            foreach ($plugins as $scope => $scope_plugins) {
+                foreach ($scope_plugins as $file => $plugin) {
+                    $lang_string = get_string($plugin::$name, 'local_analytics');
+                    $result[$scope][$plugin::$name] = $lang_string;
+                }
             }
         }
 
-        return $result;
+        return $result[$scope_requested];
 
     }
 
