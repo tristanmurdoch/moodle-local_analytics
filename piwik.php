@@ -111,15 +111,15 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
      * Build a custom dimension string.
      *
      * @param integer $index
-     *            The custom dimension index number (1 through ...).
+     *            The custom dimension index number (Piwik assigne).
+     * * @param string $context
+     *            The string describing the context.
      * @param string $value
      *            The value string.
-     * @param string $context
-     *            The string describing the context.
      *
      * @return string The generated string.
      */
-    static public function local_get_custom_dimension_string($index, $value, $context) {
+    static public function local_get_custom_dimension_string($index, $context, $value) {
         $result = '_paq.push(["setCustomDimension", ';
         $result .= 'customDimensionId = ' . $index . ', ';
         $result .= 'customDimensionValue = "' . $value . '"';
