@@ -304,7 +304,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
             }
 
             if ($cleanurl) {
-                $doctitle = "_paq.push(['setDocumentTitle', '" . self::trackurl() . "']);";
+                $doctitle = "_paq.push(['setDocumentTitle', '" . self::trackurl() . "']);\n";
             }
             else {
                 $doctitle = "";
