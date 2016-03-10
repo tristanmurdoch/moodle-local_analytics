@@ -59,28 +59,6 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
     }
 
     /**
-     * Build a custom dimension string.
-     *
-     * @param integer $index
-     *            The custom dimension index number (1 through ...).
-     * @param string $value
-     *            The value string.
-     * @param string $context
-     *            The string describing the context.
-     *
-     * @return string The generated string.
-     */
-    static public function local_get_custom_dimension_string($index, $value, $context) {
-        $result = '_paq.push(["setCustomDimension", ';
-        $result .= $index . ', ';
-        $result .= '"' . $value . '", ';
-        $result .= '"' . $context . '"';
-        $result .= "]);\n";
-
-        return $result;
-    }
-
-    /**
      * see http://piwik.org/blog/2012/10/using-custom-variables-in-piwik-tutorial/
      *
      * There can be up to 5 Custom Variables in the piwik callback.
@@ -130,40 +108,160 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
     }
 
     /**
-     * see http://piwik.org/blog/2012/10/using-custom-variables-in-piwik-tutorial/
+     * Build a custom dimension string.
      *
-     * There can be up to 5 Custom Variables in the piwik callback.
-     * These are dynamically defined
+     * @param integer $index
+     *            The custom dimension index number (1 through ...).
+     * @param string $value
+     *            The value string.
+     * @param string $context
+     *            The string describing the context.
      *
-     * Note, in the future this will be replaced with 'Custom Dimensions'
-     * - http://piwik.org/docs/custom-variables/
-     * https://piwik.org/faq/general/faq_21117/
+     * @return string The generated string.
      */
-    static public function insert_custom_moodle_dimensions() {
-        $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions', 5);
+    static public function local_get_custom_dimension_string($index, $value, $context) {
+        $result = '_paq.push(["setCustomDimension", ';
+        $result .= 'customDimensionId = ' . $index . ', ';
+        $result .= 'customDimensionValue = "' . $value . '"';
+        $result .= "]);\n";
+
+        return $result;
+    }
+
+    /**
+     * Return the details of a dimension, if configured and usable.
+     *
+     * @param string $scope
+     *   The scope (visit or action) being considered.
+     * @param int $index
+     *   The setting index within that slot to consider.
+     *
+     * @return mixed
+     *   Array containing the data if it's to be used, null otherwise.
+     */
+    static private function get_dimension_values($scope, $index) {
         $plugins = \local_analytics\dimensions::instantiate_plugins();
 
+        $name = 'piwikdimension' . $scope . '_' . $index;
+        $dimension = get_config('local_analytics', $name);
+
+        if ($dimension == '') {
+            return null;
+        }
+
+        $key = '\local\analytics\dimensions\\' . $dimension;
+
+        if (!array_key_exists($key, $plugins[$scope])) {
+            debugging("Local Analytics Piwik Dimension Plugin '${dimension}' is missing.", DEBUG_NORMAL);
+
+            return null;
+        }
+
+        $name = 'piwikdimensionid_action_' . $index;
+        $dimensionid = get_config('local_analytics', $name);
+
+        if ($dimensionid == '') {
+            debugging("Local Analytics Piwik dimension action plugin #" . $index . " has been chosen but no
+                        ID has been supplied.", DEBUG_NORMAL);
+
+            return null;
+        }
+
+        $value = $plugins[$scope][$key]->value();
+
+        return array($dimensionid, $dimension, $value);
+    }
+
+    /**
+     * Get the variables for a scope.
+     *
+     * Find out how many settings are enabled, then iterate over them seeing which (if any) are to be used for this
+     * page.
+     *
+     * @param string $scope
+     *   The name of the scope being considered (visit or action)
+     *
+     * @return array
+     *   An array of the details to pass to the renderer.
+     */
+    static public function dimensions_for_scope($scope) {
+        $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions', 5);
+
+        $result = array();
+
+        for ($i = 1; $i <= $num_dimensions; $i++) {
+            list($dimensionid, $dimension, $value) = self::get_dimension_values($scope, $i);
+
+            if (!$dimensionid || !$value) {
+                continue;
+            }
+
+            $result[] = array('id' => $dimensionid, 'dimension' => $dimension, 'value' => $value);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Render the variables for action scope.
+     *
+     * @param array $dimensions
+     *   The list of dimensions to render,
+     *
+     * @return
+     *   The rendered action.
+     */
+    static public function render_dimensions_for_action_scope($dimensions) {
+        $result = '';
+        foreach ($dimensions as $dimension) {
+            $result .= self::local_get_custom_dimension_string($dimension['id'], $dimension['dimension'],
+                $dimension['value'], 'action');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Render the variables for visit scope.
+     *
+     * @param array $dimensions
+     *   The list of dimensions to render,
+     *
+     * @return
+     *   The rendered visit.
+     */
+    static public function render_dimensions_for_visit_scope($dimensions) {
+        // Scope is action. For now, just use trackPageView. @TODO: Use trackEvent too.
+        $content = ['trackPageView', self::trackurl()];
+        $object = new stdClass();
+
+        foreach ($dimensions as $dimension) {
+            $attrib = 'dimension' . $dimension['id'];
+            $object->$attrib = $dimension['value'];
+        }
+
+        if (!empty($dimensions)) {
+            $content[] = $object;
+        }
+
+        $result = "_paq.push(" . json_encode($content) . ");\n";
+        return $result;
+    }
+
+    /**
+     * Add Javascript for custom dimensions.
+     *
+     * http://developer.piwik.org/guides/tracking-javascript-guide#custom-dimensions
+     */
+    static public function insert_custom_moodle_dimensions() {
+
+        $plugins = \local_analytics\dimensions::instantiate_plugins();
         $customvars = '';
 
         foreach ($plugins as $scope => $scope_plugins) {
-            for ($i = 1; $i <= $num_dimensions; $i++) {
-                $name = 'piwikdimension' . $scope . '_' . $i;
-                $dimension = get_config('local_analytics', $name);
-
-                if ($dimension == '') {
-                    continue;
-                }
-
-                $key = '\local\analytics\dimensions\\' . $dimension;
-
-                if (!array_key_exists($key, $scope_plugins)) {
-                    debugging("Local Analytics Piwik Dimension Plugin '${dimension}' is missing.", DEBUG_NORMAL);
-                    continue;
-                }
-
-                $customvars .= self::local_get_custom_dimension_string($i, $dimension, $scope_plugins[$key]->value(),
-                    $scope);
-            }
+            $dimensions = self::dimensions_for_scope($scope);
+            $renderer = "render_dimensions_for_${scope}_scope";
+            $customvars .= self::$renderer($dimensions);
         }
 
         return $customvars;
@@ -206,7 +304,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
             }
 
             if ($cleanurl) {
-                $doctitle = "_paq.push(['setDocumentTitle', " . self::trackurl() . "]);";
+                $doctitle = "_paq.push(['setDocumentTitle', '" . self::trackurl() . "']);";
             }
             else {
                 $doctitle = "";
