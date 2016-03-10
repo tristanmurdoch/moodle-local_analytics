@@ -60,11 +60,11 @@ $string['piwikusedimensions_desc'] = 'Use custom dimensions for Piwik rather tha
 $string['piwik_number_dimensions'] = 'Number of Piwik {$a->custom}dimensions used for {$a->scope} scope';
 $string['piwik_number_dimensions_desc'] = 'The number of {$a->custom}dimensions used for Piwik for {$a->scope} scope.';
 
-$string['piwikdimension'] = '{$a->id} dimension for scope \'{$a->scope}\'';
-$string['piwikdimensiondesc'] = 'An optional value for {$a->id} dimension in scope \'{$a->scope}\'';
+$string['piwikdimension'] = '{$a->id} dimension for {$a->scope} scope';
+$string['piwikdimensiondesc'] = 'An optional value for {$a->id} dimension in {$a->scope} scope.';
 
-$string['piwikdimensionid'] = 'Piwik ID for {$a->id} dimension for scope \'{$a->scope}\'';
-$string['piwikdimensionid_desc'] = 'The Piwik dimension ID for {$a->id} dimension in scope \'{$a->scope}\'. If the
+$string['piwikdimensionid'] = 'Piwik ID for {$a->id} dimension for {$a->scope} scope';
+$string['piwikdimensionid_desc'] = 'The Piwik dimension ID for {$a->id} dimension in {$a->scope} scope. If the
 dimension is used, this ID is required.';
 
 $string['course_full_name'] = 'Course full name';
