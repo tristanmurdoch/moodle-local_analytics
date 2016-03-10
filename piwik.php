@@ -221,6 +221,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
         _paq.push(['setUserId', $USER->id]);
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
+        _paq.push(['enableHeartBeatTimer', 30]);
         (function() {
           var u='//" . $siteurl . "/';
           _paq.push(['setTrackerUrl', u+'piwik.php']);
