@@ -93,6 +93,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         set_config('masquerade_handling', TRUE, 'local_analytics');
         set_config('cleanurl', TRUE, 'local_analytics');
         set_config('location', 'header', 'local_analytics');
+        set_config('piwikusedimensions', FALSE, 'local_analytics');
     }
 
     /**
