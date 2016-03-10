@@ -15,6 +15,11 @@ class user_role implements dimension_interface {
     static $name = 'user_role';
 
     /**
+     * Scope of the dimension.
+     */
+    static $scope = 'action';
+
+    /**
      * Get the value for js to send.
      *
      * @return mixed

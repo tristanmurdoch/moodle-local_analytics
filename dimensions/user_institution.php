@@ -15,6 +15,11 @@ class user_institution implements dimension_interface {
     static $name = 'user_institution';
 
     /**
+     * Scope of the dimension.
+     */
+    static $scope = 'visit';
+
+    /**
      * Get the value for js to send.
      *
      * @return mixed

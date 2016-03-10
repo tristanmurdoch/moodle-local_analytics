@@ -15,6 +15,11 @@ class course_full_name implements dimension_interface {
     static $name = 'course_full_name';
 
     /**
+     * Scope of the dimension.
+     */
+    static $scope = 'action';
+
+    /**
      * Get the value for js to send.
      *
      * @return mixed

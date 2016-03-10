@@ -15,6 +15,11 @@ class context implements dimension_interface {
     static $name = 'context';
 
     /**
+     * Scope of the dimension.
+     */
+    static $scope = 'action';
+
+    /**
      * Get the value for js to send.
      *
      * @return mixed
