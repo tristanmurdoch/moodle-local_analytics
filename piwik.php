@@ -26,7 +26,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once('AbstractLocalAnalytics.php');
-require_once ('dimensions.php');
+require_once('dimensions.php');
 
 class local_analytics_piwik extends AbstractLocalAnalytics {
     /**
@@ -106,9 +106,10 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
         // User Role
         if (is_siteadmin($USER->id)) {
             $rolestr = "Admin";
-        } else {
+        }
+        else {
             $roles = get_user_roles($context, $USER->id);
-            $rolestr = array ();
+            $rolestr = array();
             foreach ($roles as $role) {
                 $rolestr[] = role_get_name($role, $context);
             }
@@ -146,18 +147,18 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
 
         for ($i = 1; $i <= $num_dimensions; $i++) {
             $name = 'piwikdimension' . $i;
-            $dimension = get_config('local_analytics', $name);
+                $dimension = get_config('local_analytics', $name);
 
-            if ($dimension == '') {
-                continue;
-            }
+                if ($dimension == '') {
+                    continue;
+                }
 
-            $key = '\local\analytics\dimensions\\' . $dimension;
+                $key = '\local\analytics\dimensions\\' . $dimension;
 
             if (!array_key_exists($key, $plugins)) {
-                debugging("Local Analytics Piwik Dimension Plugin '${dimension}' is missing.", DEBUG_NORMAL);
-                continue;
-            }
+                    debugging("Local Analytics Piwik Dimension Plugin '${dimension}' is missing.", DEBUG_NORMAL);
+                    continue;
+                }
 
             $customvars .= self::local_get_custom_var_string($i, $dimension, $plugins[$key]->value(), 'page');
         }
@@ -196,13 +197,15 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
         if (!empty($siteurl)) {
             if ($imagetrack) {
                 $addition = '<noscript><p><img src="//' . $siteurl . '/piwik.php?idsite=' . $siteid . '" style="border:0;" alt="" /></p></noscript>';
-            } else {
+            }
+            else {
                 $addition = '';
             }
 
             if ($cleanurl) {
                 $doctitle = "_paq.push(['setDocumentTitle', " . self::trackurl() . "]);";
-            } else {
+            }
+            else {
                 $doctitle = "";
             }
 
