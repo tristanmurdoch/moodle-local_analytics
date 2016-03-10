@@ -87,7 +87,18 @@ if (is_siteadmin()) {
         $choices = \local_analytics\dimensions::setting_options($scope);
 
         for ($i = 1; $i <= $num_dimensions; $i++) {
-            $name = 'local_analytics/piwikdimension' . $scope . '_' . $i;
+            // A field for entering the dimension ID
+            $name = 'local_analytics/piwikdimensionid_' . $scope . '_' . $i;
+            $lang_args = new \stdClass();
+            $lang_args->id = $i;
+            $lang_args->scope = $scope;
+            $title = get_string('piwikdimensionid', 'local_analytics', $lang_args);
+            $description = get_string('piwikdimensionid_desc', 'local_analytics', $lang_args);
+            $setting = new admin_setting_configtext($name, $title, $description, '');
+            $settings->add($setting);
+
+            // And one for picking what content is used.
+            $name = 'local_analytics/piwikdimensioncontent_' . $scope . '_' . $i;
             $lang_args = new \stdClass();
             $lang_args->id = $i;
             $lang_args->scope = $scope;
