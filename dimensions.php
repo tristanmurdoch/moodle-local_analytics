@@ -87,9 +87,12 @@ class dimensions
         if (is_null($result)) {
             $plugins = self::instantiate_plugins();
 
-            $result = array('' => '');
+            $result = array();
 
             foreach ($plugins as $scope => $scope_plugins) {
+                // Nothing is selected entry.
+                $result[$scope][''] = '';
+
                 foreach ($scope_plugins as $file => $plugin) {
                     $lang_string = get_string($plugin::$name, 'local_analytics');
                     $result[$scope][$plugin::$name] = $lang_string;
