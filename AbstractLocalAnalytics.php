@@ -40,7 +40,7 @@ require_once(dirname(__FILE__) . '/local_analytics_interface.php');
    static public function trackurl($urlencode = FALSE, $leading_slash = FALSE) {
      global $DB, $PAGE, $COURSE;
      $pageinfo = get_context_info_array($PAGE->context->id);
-     $trackurl = "'";
+     $trackurl = "";
 
      if ($leading_slash) {
        $trackurl .= "/";
@@ -79,7 +79,6 @@ require_once(dirname(__FILE__) . '/local_analytics_interface.php');
        $trackurl .= self::mightEncode($pageinfo[2]->modname, $urlencode) . '/' . self::mightEncode($pageinfo[2]->name, $urlencode);
      }
 
-     $trackurl .= "'";
      return $trackurl;
    }
 
