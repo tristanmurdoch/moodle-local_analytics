@@ -60,8 +60,8 @@ $string['piwikusedimensions_desc'] = 'Use dimensions for Piwik';
 $string['piwik_number_dimensions'] = 'Number of Piwik dimensions used';
 $string['piwik_number_dimensions_desc'] = 'The number of custom dimensions used for Piwik';
 
-$string['piwikdimension'] = 'Dimension {$a}';
-$string['piwikdimensiondesc'] = 'An optional value for dimension {$a}';
+$string['piwikdimension'] = 'Dimension {$a->id} for scope \'{$a->scope}\'';
+$string['piwikdimensiondesc'] = 'An optional value for dimension {$a->id} in scope \'{$a->scope}\'';
 
 $string['course_full_name'] = 'Course full name';
 $string['context'] = 'Context';
