@@ -1,23 +1,23 @@
 <?php
 /**
  * @file
- * User name dimension definition.
+ * Course name dimension definition.
  */
 
 namespace local\analytics\dimensions;
 
 require_once dirname(__DIR__) . '/dimension_interface.php';
 
-class user_institution implements dimension_interface {
+class course_id_number implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */
-    static $name = 'user_institution';
+    static $name = 'course_id_number';
 
     /**
      * Scope of the dimension.
      */
-    static $scope = 'visit';
+    static $scope = 'action';
 
     /**
      * Get the value for js to send.
@@ -26,13 +26,8 @@ class user_institution implements dimension_interface {
      *   The value of the dimension.
      */
     public function value() {
-        global $USER;
+        global $COURSE;
 
-        // Handle guest without error.
-        if (!isset($USER->institution)) {
-            return FALSE;
-        }
-
-        return $USER->institution;
+        return $COURSE->idnumber;
     }
 }

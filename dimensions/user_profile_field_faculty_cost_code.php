@@ -8,11 +8,11 @@ namespace local\analytics\dimensions;
 
 require_once dirname(__DIR__) . '/dimension_interface.php';
 
-class user_institution implements dimension_interface {
+class user_profile_field_faculty_cost_code implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */
-    static $name = 'user_institution';
+    static $name = 'user_profile_field_faculty_cost_code';
 
     /**
      * Scope of the dimension.
@@ -27,12 +27,10 @@ class user_institution implements dimension_interface {
      */
     public function value() {
         global $USER;
-
-        // Handle guest without error.
-        if (!isset($USER->institution)) {
+        if (!isset($USER->profile['facultycostcode'])) {
             return FALSE;
         }
 
-        return $USER->institution;
+        return $USER->profile['facultycostcode'];
     }
 }

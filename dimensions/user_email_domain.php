@@ -8,11 +8,11 @@ namespace local\analytics\dimensions;
 
 require_once dirname(__DIR__) . '/dimension_interface.php';
 
-class user_institution implements dimension_interface {
+class user_email_domain implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */
-    static $name = 'user_institution';
+    static $name = 'user_email_domain';
 
     /**
      * Scope of the dimension.
@@ -29,10 +29,11 @@ class user_institution implements dimension_interface {
         global $USER;
 
         // Handle guest without error.
-        if (!isset($USER->institution)) {
+        if (!isset($USER->email)) {
             return FALSE;
         }
 
-        return $USER->institution;
+        $parts = explode('@', $USER->email);
+        return $parts[1];
     }
 }

@@ -26,10 +26,11 @@ class user_role implements dimension_interface {
      *   The value of the dimension.
      */
     public function value() {
-        global $USER;
+        global $USER, $COURSE;
         if (is_siteadmin($USER->id)) {
             $rolestr = "Admin";
         } else {
+            $context = \context_course::instance($COURSE->id);
             $roles = get_user_roles($context, $USER->id);
             $rolestr = array ();
             foreach ($roles as $role) {

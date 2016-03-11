@@ -68,7 +68,16 @@ $string['piwikdimensionid_desc'] = 'The Piwik dimension ID for {$a->id} dimensio
 dimension is used, this ID is required.';
 
 $string['course_full_name'] = 'Course full name';
+$string['course_short_name'] = 'Course short name';
+$string['course_id_number'] = 'Course ID number';
+$string['course_category_hierarchy_full_path'] = 'Course category hierarchy full path';
+$string['course_enrolment_method'] = 'Course enrolment method';
 $string['context'] = 'Context';
 $string['user_name'] = 'User name';
 $string['user_role'] = 'User role';
+$string['user_email_domain'] = 'User email domain';
+$string['user_department'] = 'User department';
 $string['user_institution'] = 'User institution';
+$string['is_on_campus'] = 'User is on campus';
+$string['is_on_bundoora_campus'] = 'User is on Bundoora campus network';
+$string['user_profile_field_faculty_cost_code'] = 'Faculty cost code user profile field';

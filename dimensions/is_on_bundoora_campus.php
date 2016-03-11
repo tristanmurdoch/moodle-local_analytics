@@ -1,18 +1,18 @@
 <?php
 /**
  * @file
- * User name dimension definition.
+ * Course name dimension definition.
  */
 
 namespace local\analytics\dimensions;
 
 require_once dirname(__DIR__) . '/dimension_interface.php';
 
-class user_institution implements dimension_interface {
+class is_on_bundoora_campus implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */
-    static $name = 'user_institution';
+    static $name = 'is_on_bundoora_campus';
 
     /**
      * Scope of the dimension.
@@ -26,13 +26,12 @@ class user_institution implements dimension_interface {
      *   The value of the dimension.
      */
     public function value() {
-        global $USER;
+        global $CFG;
 
-        // Handle guest without error.
-        if (!isset($USER->institution)) {
+        if (!isset($CFG->bundoora_campus_ips)) {
             return FALSE;
         }
 
-        return $USER->institution;
+        return remoteip_in_list($CFG->bundoora_campus_ips);
     }
 }
