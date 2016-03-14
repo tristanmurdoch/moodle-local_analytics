@@ -104,6 +104,8 @@ class local_analytics_types_testcase extends \advanced_testcase {
      * AND trackadmin is TRUE
      * AND the user is a site admin
      * THEN the result should be TRUE
+     *
+     * @test
      */
     public function shouldTrackReturnsTrueForSiteadminsWhenTrackAdminOn() {
       $piwik = new local_analytics_piwik();
@@ -120,6 +122,8 @@ class local_analytics_types_testcase extends \advanced_testcase {
      * AND trackadmin is FALSE
      * AND the user is a site admin
      * THEN the result should be FALSE
+     *
+     * @test
      */
     public function shouldTrackReturnsFalseForSiteadminsWhenTrackAdminOff() {
 
@@ -138,6 +142,8 @@ class local_analytics_types_testcase extends \advanced_testcase {
      * WHEN its shouldTrack function is invoked
      * AND the user is not a site admin
      * THEN the result should be TRUE
+     *
+     * @test
      */
     public function shouldTrackReturnsTrueForNonSiteadmins() {
 
