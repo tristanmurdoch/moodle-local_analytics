@@ -37,7 +37,7 @@ class local_analytics_guniversal extends AbstractLocalAnalytics {
 
         if ($cleanurl) {
             $addition = "{'hitType' : 'pageview',
-                'page' : " . self::trackurl(TRUE, TRUE) . ",
+                'page' : '" . self::trackurl(TRUE, TRUE) . "',
                 'title' : '" . addslashes($PAGE->heading) . "'
                 }";
         } else {

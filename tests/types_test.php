@@ -277,7 +277,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $piwik = new local_analytics_piwik();
         $trackurl = $piwik::trackurl();
 
-        $this->assertEquals("'Miscellaneous/Test course 1/View'", $trackurl);
+        $this->assertEquals("Miscellaneous/Test course 1/View", $trackurl);
     }
 
     /**
@@ -301,7 +301,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $piwik = new local_analytics_piwik();
         $trackurl = $piwik::trackurl();
 
-        $this->assertEquals("'Miscellaneous/Test course 1/Edit'", $trackurl);
+        $this->assertEquals("Miscellaneous/Test course 1/Edit", $trackurl);
     }
 
     /**
@@ -323,7 +323,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $piwik = new local_analytics_piwik();
         $trackurl = $piwik::trackurl();
 
-        $this->assertEquals("'Miscellaneous/Test course 1/wiki/Wiki 1'", $trackurl);
+        $this->assertEquals("Miscellaneous/Test course 1/wiki/Wiki 1", $trackurl);
     }
 
     /**
@@ -540,7 +540,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $ga = new local_analytics_ganalytics();
         $actual = $ga::trackurl(TRUE, TRUE);
 
-        $this->assertEquals("'/Miscellaneous/Test+course+1/View'", $actual);
+        $this->assertEquals("/Miscellaneous/Test+course+1/View", $actual);
     }
 
     /**
@@ -571,7 +571,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $ga = new local_analytics_ganalytics();
         $actual = $ga::trackurl(TRUE, TRUE);
 
-        $this->assertEquals("'/Miscellaneous/Test+course+1/Edit'", $actual);
+        $this->assertEquals("/Miscellaneous/Test+course+1/Edit", $actual);
     }
 
     /**
@@ -595,7 +595,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $ga = new local_analytics_ganalytics();
         $trackurl = $ga::trackurl(TRUE, TRUE);
 
-        $this->assertEquals("'/Miscellaneous/Test+course+1/wiki/Wiki+1'", $trackurl);
+        $this->assertEquals("/Miscellaneous/Test+course+1/wiki/Wiki+1", $trackurl);
     }
 
     /**
@@ -692,7 +692,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $ga = new local_analytics_guniversal();
         $actual = $ga::trackurl(TRUE, TRUE);
 
-        $this->assertEquals("'/Miscellaneous/Test+course+1/View'", $actual);
+        $this->assertEquals("/Miscellaneous/Test+course+1/View", $actual);
     }
 
     /**
@@ -723,7 +723,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $ga = new local_analytics_guniversal();
         $actual = $ga::trackurl(TRUE, TRUE);
 
-        $this->assertEquals("'/Miscellaneous/Test+course+1/Edit'", $actual);
+        $this->assertEquals("/Miscellaneous/Test+course+1/Edit", $actual);
     }
 
     /**
@@ -747,7 +747,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $guniversal = new local_analytics_guniversal();
         $trackurl = $guniversal::trackurl(TRUE, TRUE);
 
-        $this->assertEquals("'/Miscellaneous/Test+course+1/wiki/Wiki+1'", $trackurl);
+        $this->assertEquals("/Miscellaneous/Test+course+1/wiki/Wiki+1", $trackurl);
     }
 
     /**

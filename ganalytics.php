@@ -41,7 +41,7 @@ class local_analytics_ganalytics extends AbstractLocalAnalytics {
                 <script type='text/javascript' name='localga'>
                   var _gaq = _gaq || [];
                   _gaq.push(['_setAccount', '" . $siteid . "']);
-                  _gaq.push(['_trackPageview'," . ($cleanurl ? self::trackurl(TRUE, TRUE) : '') . "]);
+                  _gaq.push(['_trackPageview'," . ($cleanurl ? "'" . self::trackurl(TRUE, TRUE) ."'" : '') . "]);
                   _gaq.push(['_setSiteSpeedSampleRate', 50]);
 
                   (function() {
