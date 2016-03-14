@@ -1,7 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: nigelc
- * Date: 15/03/16
- * Time: 9:08 AM
+ * @file
+ * Faulty test plugin.
+ *
+ * Doesn't implement a 'faultyplugin' class as it should.
  */

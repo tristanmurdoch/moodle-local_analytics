@@ -144,4 +144,22 @@ class local_analytics_dimensions_testcase extends \advanced_testcase
         }
     }
 
+    /**
+     * Test that instantiated plugins complains about a file that doesn't implement the expected class.
+     *
+     * GIVEN a file in the plugins directory not having a class that matches the filename
+     * WHEN the instantiate_plugins function tries to use it
+     * THEN it should generate a debugging message about the issue.
+     *
+     * (assertDebuggingCalled requires that our test be named test* - it uses the backtrace to decide whether a test is running).
+     */
+    public function testInstantiatedPluginsComplainsAboutFaultyPlugin() {
+        should_use_mock_scandir(false);
+
+        $filename = __DIR__ . '/testdata/faultyplugin.php';
+        $classname = 'faultyplugin';
+
+        $result = dimensions::instantiate_plugin($filename, $classname);
+        $this->assertDebuggingCalled("Local Analytics: File ${filename} doesn't define a class named ${classname}");
+    }
 }
