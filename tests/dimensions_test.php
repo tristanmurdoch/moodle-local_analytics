@@ -32,7 +32,8 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/../dimensions.php');
 
-function should_use_mock_scandir($set = null) {
+function should_use_mock_scandir($set = null)
+{
     static $use_mock_scandir = true;
 
     if (!is_null($set)) {
@@ -51,7 +52,8 @@ function should_use_mock_scandir($set = null) {
  * @return array
  *   The list of files found.
  */
-function scandir($directory) {
+function scandir($directory)
+{
     if (should_use_mock_scandir()) {
         return array(
             '.',
@@ -73,7 +75,8 @@ class local_analytics_dimensions_testcase extends \advanced_testcase
     /**
      * Setup test data.
      */
-    public function setUp() {
+    public function setUp()
+    {
         global $CFG;
 
         $this->resetAfterTest();
@@ -93,7 +96,8 @@ class local_analytics_dimensions_testcase extends \advanced_testcase
      *
      * @test
      */
-    public function enumeratePluginsFiltersScanDirAsExpected() {
+    public function enumeratePluginsFiltersScanDirAsExpected()
+    {
         $actual = dimensions::enumerate_plugins();
 
         // 3 because it's the fourth element (zero indexed) in the scandir result.
@@ -111,7 +115,8 @@ class local_analytics_dimensions_testcase extends \advanced_testcase
      *
      * @test
      */
-    public function instantiatePluginsCanReturnAnArrayOfPlugins() {
+    public function instantiatePluginsCanReturnAnArrayOfPlugins()
+    {
         should_use_mock_scandir(false);
 
         $plugins = dimensions::instantiate_plugins();
@@ -132,7 +137,8 @@ class local_analytics_dimensions_testcase extends \advanced_testcase
      *
      * @test
      */
-    public function instantiatedPluginsImplementInterface() {
+    public function instantiatedPluginsImplementInterface()
+    {
         should_use_mock_scandir(false);
 
         $plugins = dimensions::instantiate_plugins();
