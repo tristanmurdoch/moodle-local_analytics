@@ -94,7 +94,7 @@ require_once(dirname(__FILE__) . '/local_analytics_interface.php');
      }
 
      $trackadmin = get_config('local_analytics', 'trackadmin');
-     return $trackadmin;
+     return ($trackadmin == 1);
    }
 
    /**
