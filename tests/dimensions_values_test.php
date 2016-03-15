@@ -30,7 +30,11 @@ use local\analytics\dimensions\dimension_interface;
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
+
 require_once(__DIR__ . '/../dimensions.php');
+require_once($CFG->libdir . '/coursecatlib.php');
+
 
 /**
  * Class local_analytics_dimensions_testcase
@@ -92,7 +96,25 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function courseHierachyPluginReturnsCourseCategoryPath()
     {
+        global $COURSE;
 
+        $instance = new \local\analytics\dimensions\course_category_hierarchy_full_path();
+        $actual = $instance->value();
+
+        // Front page has no parents so result is False.
+        $this->assertFalse($actual);
+
+        // Create a set of nested categories.
+        $category1 = \coursecat::create(array('name' => 'Top'));
+        $category2 = \coursecat::create(array('name' => 'Middle', 'parent' => $category1->id));
+        $category3 = \coursecat::create(array('name' => 'Bottom', 'parent' => $category2->id));
+
+        $COURSE = $this->getDataGenerator()->create_course(array('category' => $category3->id));
+
+        $actual = $instance->value();
+
+        $expected = "Top\Middle\Bottom";
+        $this->assertEquals($expected, $actual);
     }
 
     /**
