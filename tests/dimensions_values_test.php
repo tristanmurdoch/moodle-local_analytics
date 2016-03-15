@@ -73,6 +73,11 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function contextPluginReturnsCourseContextName()
     {
+        $instance = new \local\analytics\dimensions\context();
+        $actual = $instance->value();
+
+        $expected = "Front page";
+        $this->assertEquals($expected, $actual);
 
     }
 
