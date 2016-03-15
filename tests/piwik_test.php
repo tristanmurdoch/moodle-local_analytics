@@ -12,6 +12,18 @@
  */
 class piwik_test extends \advanced_testcase {
 
+    public function setUp()
+    {
+        $this->resetAfterTest();
+
+        // Prime the plugin cache with our mock plugin.
+        \local_analytics\dimensions::instantiate_plugin(__DIR__ . '/testdata/mock_user_name.php', '\local\analytics\dimensions\mock_user_name');
+
+        // Set up the settings.
+        set_config('piwikdimensioncontent_visit_1', 'mock_user_name', 'local_analytics');
+        set_config('piwikdimensionid_visit_1', '2468', 'local_analytics');
+    }
+
     /**
      * Test that a custom dimension string is formatted as expected.
      *
@@ -25,6 +37,26 @@ class piwik_test extends \advanced_testcase {
         $actual = \local_analytics_piwik::local_get_custom_dimension_string(13579, 'some_context_please', 'chocolate_fish');
 
         $expected = '_paq.push(["setCustomDimension", customDimensionId = 13579, customDimensionValue = "chocolate_fish"]);' . "\n";
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * Test that expected dimension values are obtained.
+     *
+     * GIVEN the Piwik class
+     * WHEN the local_get_custom_dimension_string function is called
+     * THEN resulting string should match expectations
+     *
+     * @test
+     */
+    public function customDimensionValuesObtainedCorrectly() {
+        $actual = \local_analytics_piwik::get_dimension_values('visit', 1);
+
+        $expected = array(
+            0 => '2468',
+            1 => 'mock_user_name',
+            2 => 'This is not a _real_ user name!',
+        );
         $this->assertSame($expected, $actual);
     }
 

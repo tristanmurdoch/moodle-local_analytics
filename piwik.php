@@ -139,7 +139,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
      * @return mixed
      *   Array containing the data if it's to be used, null otherwise.
      */
-    static private function get_dimension_values($scope, $index) {
+    static public function get_dimension_values($scope, $index) {
         $plugins = \local_analytics\dimensions::instantiate_plugins();
 
         $name = 'piwikdimensioncontent_' . $scope . '_' . $index;
