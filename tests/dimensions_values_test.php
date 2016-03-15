@@ -227,7 +227,34 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function isOnCampusPluginReturnsWhetherAtACampus()
     {
+        global $CFG, $_SERVER;
 
+        $instance = new \local\analytics\dimensions\is_on_campus();
+
+        unset($CFG->on_campus_ips);
+        $actual = $instance->value();
+        $this->assertFalse($actual);
+
+        $CFG->on_campus_ips = "1.2.3.0/24, 1.2.5.0/24, 192.168.0.0/16, 10.0.0.0/8";
+        $_SERVER['HTTP_CLIENT_IP'] = '1.2.3.4';
+
+        $actual = $instance->value();
+        $this->assertTrue($actual);
+
+        $_SERVER['HTTP_CLIENT_IP'] = '1.2.5.4';
+
+        $actual = $instance->value();
+        $this->assertTrue($actual);
+
+        $_SERVER['HTTP_CLIENT_IP'] = '10.0.2.153';
+
+        $actual = $instance->value();
+        $this->assertTrue($actual);
+
+        $_SERVER['HTTP_CLIENT_IP'] = '17.54.23.253';
+
+        $actual = $instance->value();
+        $this->assertFalse($actual);
     }
 
     /**
