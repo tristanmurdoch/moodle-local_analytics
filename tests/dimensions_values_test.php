@@ -128,7 +128,42 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function courseEnrolmentMethodPluginReturnsEnrolmentMethod()
     {
+        global $USER, $COURSE, $DB;
 
+        $instance = new \local\analytics\dimensions\course_enrolment_method();
+
+        // Front page - everyone is enrolled and method is False.
+        $actual = $instance->value();
+        $this->assertFalse($actual);
+
+        $COURSE = $this->getDataGenerator()->create_course();
+
+        $studentrole = $DB->get_record('role', array('shortname'=>'student'));
+        $this->assertNotEmpty($studentrole);
+
+        $this->getDataGenerator()->enrol_user($USER->id, $COURSE->id, $studentrole->id, 'manual', 0, 9876543210);
+        $actual = $instance->value();
+        $this->assertEquals('manual', $actual);
+
+        // Unenrol
+        $manual = $DB->get_record('enrol', array('courseid' => $COURSE->id, 'enrol' => 'manual'), '*', MUST_EXIST);
+        enrol_get_plugin('manual')->unenrol_user($manual, $USER->id);
+        $actual = $instance->value();
+        $this->assertFalse($actual);
+
+        // Broken enrolment (self enrolment isn't enabled yet)
+        $selfplugin = enrol_get_plugin('self');
+        $this->assertNotEmpty($selfplugin);
+        $this->assertTrue(enrol_is_enabled('self'));
+        $this->getDataGenerator()->enrol_user($USER->id, $COURSE->id, $studentrole->id, 'self', 0, 9876543210);
+        $actual = $instance->value();
+        $this->assertFalse($actual);
+
+        // Enable the self enrolment plugin for this course and it starts working :)
+        $selfInstance = $DB->get_record('enrol', array('courseid'=>$COURSE->id, 'enrol'=>'self'), '*', MUST_EXIST);
+        $selfplugin->update_status($selfInstance, ENROL_INSTANCE_ENABLED);
+        $actual = $instance->value();
+        $this->assertEquals('self', $actual);
     }
 
     /**
