@@ -31,7 +31,7 @@ class user_name implements dimension_interface {
         $is_masquerading = \core\session\manager::is_loggedinas();
 
         if ($is_masquerading) {
-            $use_real = get_config('local_analytics', 'masquerade_handling');
+            $use_real = (get_config('local_analytics', 'masquerade_handling') == 1);
             if ($use_real) {
                 $user = \core\session\manager::get_realuser();
             }

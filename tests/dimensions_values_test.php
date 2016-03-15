@@ -346,11 +346,31 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function userNamePluginReturnsUserName()
     {
+        global $USER;
+
         $instance = new \local\analytics\dimensions\user_name();
         $actual = $instance->value();
 
         $expected = "Kevin 11";
         $this->assertEquals($expected, $actual);
+
+        // Test not fooled by masquerading.
+        $user = $this->getDataGenerator()->create_user();
+        $_SESSION['extra'] = true;
+
+        // Try admin loginas this user in system context.
+        $this->assertObjectNotHasAttribute('realuser', $USER);
+        \core\session\manager::loginas($user->id, \context_system::instance());
+
+        // Should return admin user details.
+        set_config('local_analytics', TRUE, 'masquerade_handling');
+        $actual = $instance->value();
+        $this->assertEquals($expected, $actual);
+
+        // Shouldn't return admin user details.
+        set_config('masquerade_handling', FALSE, 'local_analytics', FALSE);
+        $actual = $instance->value();
+        $this->assertNotEquals($expected, $actual);
     }
 
     /**
