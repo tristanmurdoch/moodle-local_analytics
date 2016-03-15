@@ -196,7 +196,24 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function isOnBundooraCampusPluginReturnsWhetherAtBundoora()
     {
+        global $CFG, $_SERVER;
 
+        $instance = new \local\analytics\dimensions\is_on_bundoora_campus();
+
+        unset($CFG->bundoora_campus_ips);
+        $actual = $instance->value();
+        $this->assertFalse($actual);
+
+        $CFG->bundoora_campus_ips = "1.2.3.0/24";
+        $_SERVER['HTTP_CLIENT_IP'] = '1.2.3.4';
+
+        $actual = $instance->value();
+        $this->assertTrue($actual);
+
+        $_SERVER['HTTP_CLIENT_IP'] = '1.2.5.4';
+
+        $actual = $instance->value();
+        $this->assertFalse($actual);
     }
 
     /**
