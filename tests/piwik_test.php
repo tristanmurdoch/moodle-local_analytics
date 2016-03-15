@@ -99,4 +99,22 @@ class piwik_test extends \advanced_testcase {
         $this->assertNull($actual);
     }
 
+    /**
+     * Test that unset value is handled with no debug message and null return.
+     *
+     * GIVEN the Piwik class
+     * WHEN the local_get_custom_dimension_string function is called
+     * AND no value is chosen
+     * THEN no debug message should be set
+     * AND NULL should be returned.
+     *
+     * @test won't work. Requires testFnName due to assertDebuggingNotCalled
+     */
+    public function testCustomDimensionHandlesNoValueSetAsExpected() {
+        $actual = \local_analytics_piwik::get_dimension_values('visit', 4);
+
+        $this->assertDebuggingNotCalled();
+        $this->assertNull($actual);
+    }
+
 }
