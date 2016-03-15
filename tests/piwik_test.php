@@ -22,6 +22,8 @@ class piwik_test extends \advanced_testcase {
             '\local\analytics\dimensions\mock_course_full_name');
 
         // Set up the settings.
+        set_config('piwikusedimensions', TRUE, 'local_analytics');
+
         set_config('piwik_number_dimensions_visit', '5', 'local_analytics');
         set_config('piwikdimensioncontent_visit_1', 'mock_user_name', 'local_analytics');
         set_config('piwikdimensioncontent_visit_5', 'mock_user_name', 'local_analytics');
@@ -210,6 +212,38 @@ class piwik_test extends \advanced_testcase {
         $actual = \local_analytics_piwik::insert_custom_moodle_dimensions();
         $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "A mock course name."]);
 _paq.push(["trackPageView","",{"dimension2468":"This is not a _real_ user name!"}]);
+';
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * Test piwikusedimensions setting is honoured.
+     *
+     * GIVEN the Piwik class
+     * WHEN the local_insert_custom_moodle_vars function is called
+     * AND the piwikusedimensions configuration value is FALSE
+     * AND the custom variables are unconfigured
+     * THEN the output should use custom variables.
+     *
+     * @test
+     */
+    public function localInsertCustomMoodleVarsHonoursPiwikusedimensions() {
+
+        // First with dimensions enabled.
+        $actual = \local_analytics_piwik::local_insert_custom_moodle_vars();
+        $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "A mock course name."]);
+_paq.push(["trackPageView","",{"dimension2468":"This is not a _real_ user name!"}]);
+';
+        $this->assertSame($expected, $actual);
+
+        // Then with them disabled.
+        set_config('piwikusedimensions', FALSE, 'local_analytics');
+
+        $actual = \local_analytics_piwik::local_insert_custom_moodle_vars();
+        $expected = '_paq.push(["setCustomVariable", 1, "UserName", "", "page"]);
+_paq.push(["setCustomVariable", 2, "UserRole", "", "page"]);
+_paq.push(["setCustomVariable", 3, "Context", "Front page", "page"]);
+_paq.push(["setCustomVariable", 4, "CourseName", "PHPUnit test site", "page"]);
 ';
         $this->assertSame($expected, $actual);
     }
