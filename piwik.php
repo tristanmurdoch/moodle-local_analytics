@@ -185,7 +185,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
      *   An array of the details to pass to the renderer.
      */
     static public function dimensions_for_scope($scope) {
-        $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions_' . $scope, 5);
+        $num_dimensions = get_config('local_analytics', 'piwik_number_dimensions_' . $scope);
 
         $result = array();
 
