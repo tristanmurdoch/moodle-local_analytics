@@ -18,6 +18,8 @@ class piwik_test extends \advanced_testcase {
 
         // Prime the plugin cache with our mock plugin.
         \local_analytics\dimensions::instantiate_plugin(__DIR__ . '/testdata/mock_user_name.php', '\local\analytics\dimensions\mock_user_name');
+        \local_analytics\dimensions::instantiate_plugin(__DIR__ . '/testdata/mock_course_full_name.php',
+            '\local\analytics\dimensions\mock_course_full_name');
 
         // Set up the settings.
         set_config('piwik_number_dimensions_visit', '5', 'local_analytics');
@@ -29,6 +31,10 @@ class piwik_test extends \advanced_testcase {
         set_config('piwikdimensionid_visit_1', '2468', 'local_analytics');
         set_config('piwikdimensionid_visit_5', '2468', 'local_analytics');
         set_config('piwikdimensionid_visit_6', '2468', 'local_analytics');
+
+        set_config('piwik_number_dimensions_action', '5', 'local_analytics');
+        set_config('piwikdimensioncontent_action_1', 'mock_course_full_name', 'local_analytics');
+        set_config('piwikdimensionid_action_1', '1357', 'local_analytics');
     }
 
     /**
@@ -150,6 +156,44 @@ class piwik_test extends \advanced_testcase {
                     'value' => 'This is not a _real_ user name!',
                 ),
         );
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * Test rendering action scope dimensions.
+     *
+     * (The duplicates above get squashed, so only one line of output).
+     *
+     * GIVEN the Piwik class
+     * WHEN the render_dimensions_for_action_scope function is called
+     * THEN the output should be as expected.
+     *
+     * @test
+     */
+    public function outputOfRenderDimensionsForActionScopeAsExpected() {
+        $vars = \local_analytics_piwik::dimensions_for_scope('action');
+        $actual = \local_analytics_piwik::render_dimensions_for_action_scope($vars);
+
+        $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "A mock course name."]);
+';
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * Test rendering visit scope dimensions.
+     *
+     * GIVEN the Piwik class
+     * WHEN the render_dimensions_for_visit_scope function is called
+     * THEN the output should be as expected.
+     *
+     * @test
+     */
+    public function outputOfRenderDimensionsForVisitScopeAsExpected() {
+        $vars = \local_analytics_piwik::dimensions_for_scope('visit');
+        $actual = \local_analytics_piwik::render_dimensions_for_visit_scope($vars);
+
+        $expected = '_paq.push(["trackPageView","",{"dimension2468":"This is not a _real_ user name!"}]);
+';
         $this->assertSame($expected, $actual);
     }
 
