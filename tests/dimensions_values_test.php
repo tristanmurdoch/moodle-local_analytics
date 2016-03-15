@@ -408,6 +408,8 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function userRolePluginReturnsUserRole()
     {
+        global $COURSE, $USER;
+
         $instance = new \local\analytics\dimensions\user_role();
         $actual = $instance->value();
 
@@ -417,7 +419,17 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
         // Test guest user (fields often unset).
         $this->setGuestUser();
         $actual = $instance->value();
-        $expected = "Guest";
+        $expected = "";
+        $this->assertEquals($expected, $actual);
+
+        // Test a user with multiple roles.
+        $id = create_role('New role', 'test2', 'New test role', 'student');
+        $id2 = create_role('New role 2', 'test3', 'New test role 2', 'student');
+        \role_assign($id, $USER->id, \context_course::instance($COURSE->id));
+        \role_assign($id2, $USER->id, \context_course::instance($COURSE->id));
+
+        $actual = $instance->value();
+        $expected = "New role, New role 2";
         $this->assertEquals($expected, $actual);
     }
 
