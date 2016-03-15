@@ -33,15 +33,12 @@ class dimensions
     }
 
     /**
-     * Instantiate a single plugin and return the instance.
+     * Instantiate a single plugin and add it to the class level cache.
      *
      * @param string $file
      *   The name of the file to require.
      * @param string $class_name
      *   The name of the class that should be defined by the file.
-     *
-     * @return
-     *   The class instance or NULL if an error occurred.
      */
     static public function instantiate_plugin($file, $class_name) {
         require_once($file);
@@ -50,11 +47,19 @@ class dimensions
         if (!class_exists($class_name, false)) {
             debugging("Local Analytics: File ${file} doesn't define a class named ${class_name}",
                 DEBUG_DEVELOPER);
-            return NULL;
+            return;
         }
 
         $instance = new $class_name;
-        return $instance;
+        $scope = $instance::$scope;
+
+        if (!array_key_exists($scope, self::$dimension_instances)) {
+            self::$dimension_instances[$scope] = array();
+        }
+
+        if (!is_null($instance)) {
+            self::$dimension_instances[$scope][$class_name] = $instance;
+        }
     }
 
     /**
@@ -67,25 +72,15 @@ class dimensions
         if (is_null(self::$dimension_instances)) {
             $list_of_files = self::enumerate_plugins();
 
-            $plugins = array();
+            self::$dimension_instances = array();
 
             foreach ($list_of_files as $index => $entry) {
                 $filename = __DIR__ . '/dimensions/' . $entry;
                 $class_name = '\local\analytics\dimensions\\' . substr($entry, 0, -4);
 
-                $instance = self::instantiate_plugin($filename, $class_name);
-
-                $scope = $instance::$scope;
-                if (!array_key_exists($scope, $plugins)) {
-                    $plugins[$scope] = array();
-                }
-
-                if (!is_null($instance)) {
-                    $plugins[$scope][$class_name] = $instance;
-                }
+                self::instantiate_plugin($filename, $class_name);
             }
 
-            self::$dimension_instances = $plugins;
         }
 
         return self::$dimension_instances;
