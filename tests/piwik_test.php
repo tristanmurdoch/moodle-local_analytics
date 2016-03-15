@@ -197,4 +197,21 @@ class piwik_test extends \advanced_testcase {
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * Test getting all custom variables for a page.
+     *
+     * GIVEN the Piwik class
+     * WHEN the insert_custom_moodle_dimensions function is called
+     * THEN the output should be as expected.
+     *
+     * @test
+     */
+    public function outputOfInsertCustomMoodleDimensionsWorksAsExpected() {
+        $actual = \local_analytics_piwik::insert_custom_moodle_dimensions();
+        $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "A mock course name."]);
+_paq.push(["trackPageView","",{"dimension2468":"This is not a _real_ user name!"}]);
+';
+        $this->assertSame($expected, $actual);
+    }
+
 }
