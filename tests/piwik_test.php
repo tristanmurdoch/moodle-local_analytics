@@ -22,6 +22,7 @@ class piwik_test extends \advanced_testcase {
         // Set up the settings.
         set_config('piwikdimensioncontent_visit_1', 'mock_user_name', 'local_analytics');
         set_config('piwikdimensioncontent_visit_2', 'mock_user_name', 'local_analytics');
+        set_config('piwikdimensioncontent_visit_3', 'missing_plugin', 'local_analytics');
         set_config('piwikdimensionid_visit_1', '2468', 'local_analytics');
     }
 
@@ -77,6 +78,24 @@ class piwik_test extends \advanced_testcase {
 
         $this->assertDebuggingCalled("Local Analytics Piwik dimension action plugin #2 has been chosen but no
                         ID has been supplied.");
+        $this->assertNull($actual);
+    }
+
+    /**
+     * Test that setting a value but then removing the plugin results in an error message.
+     *
+     * GIVEN the Piwik class
+     * WHEN the local_get_custom_dimension_string function is called
+     * AND a value is chosen but the plugin can't be instantiated
+     * THEN a debug message should be set
+     * AND NULL should be returned.
+     *
+     * @test won't work. Requires testFnName due to assertDebuggingCalled
+     */
+    public function testCustomDimensionHandlesMissingPluginWithDebugMessage() {
+        $actual = \local_analytics_piwik::get_dimension_values('visit', 3);
+
+        $this->assertDebuggingCalled("Local Analytics Piwik Dimension Plugin 'missing_plugin' is missing.");
         $this->assertNull($actual);
     }
 
