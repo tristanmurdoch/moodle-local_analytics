@@ -20,10 +20,15 @@ class piwik_test extends \advanced_testcase {
         \local_analytics\dimensions::instantiate_plugin(__DIR__ . '/testdata/mock_user_name.php', '\local\analytics\dimensions\mock_user_name');
 
         // Set up the settings.
+        set_config('piwik_number_dimensions_visit', '5', 'local_analytics');
         set_config('piwikdimensioncontent_visit_1', 'mock_user_name', 'local_analytics');
-        set_config('piwikdimensioncontent_visit_2', 'mock_user_name', 'local_analytics');
-        set_config('piwikdimensioncontent_visit_3', 'missing_plugin', 'local_analytics');
+        set_config('piwikdimensioncontent_visit_5', 'mock_user_name', 'local_analytics');
+        set_config('piwikdimensioncontent_visit_6', 'mock_user_name', 'local_analytics');
+        set_config('piwikdimensioncontent_visit_10', 'mock_user_name', 'local_analytics');
+        set_config('piwikdimensioncontent_visit_11', 'missing_plugin', 'local_analytics');
         set_config('piwikdimensionid_visit_1', '2468', 'local_analytics');
+        set_config('piwikdimensionid_visit_5', '2468', 'local_analytics');
+        set_config('piwikdimensionid_visit_6', '2468', 'local_analytics');
     }
 
     /**
@@ -74,9 +79,9 @@ class piwik_test extends \advanced_testcase {
      * @test won't work. Requires testFnName due to assertDebuggingCalled
      */
     public function testCustomDimension() {
-        $actual = \local_analytics_piwik::get_dimension_values('visit', 2);
+        $actual = \local_analytics_piwik::get_dimension_values('visit', 10);
 
-        $this->assertDebuggingCalled("Local Analytics Piwik dimension action plugin #2 has been chosen but no
+        $this->assertDebuggingCalled("Local Analytics Piwik dimension action plugin #10 has been chosen but no
                         ID has been supplied.");
         $this->assertNull($actual);
     }
@@ -93,7 +98,7 @@ class piwik_test extends \advanced_testcase {
      * @test won't work. Requires testFnName due to assertDebuggingCalled
      */
     public function testCustomDimensionHandlesMissingPluginWithDebugMessage() {
-        $actual = \local_analytics_piwik::get_dimension_values('visit', 3);
+        $actual = \local_analytics_piwik::get_dimension_values('visit', 11);
 
         $this->assertDebuggingCalled("Local Analytics Piwik Dimension Plugin 'missing_plugin' is missing.");
         $this->assertNull($actual);
@@ -115,6 +120,37 @@ class piwik_test extends \advanced_testcase {
 
         $this->assertDebuggingNotCalled();
         $this->assertNull($actual);
+    }
+
+    /**
+     * Test that dimensions_for_scope honours the number of dimensions setting.
+     *
+     * GIVEN the Piwik class
+     * WHEN the dimensions_for_scope function is called
+     * AND the number of dimensions for the visit scope has been set to 5
+     * THEN a configured fifth dimension should be used
+     * AND a configured sixth dimension should be ignored.
+     *
+     * @test
+     */
+    public function dimensionsForScopeHonoursNumberOfDimensionsSetting() {
+        $actual = \local_analytics_piwik::dimensions_for_scope('visit');
+
+        $expected = array(
+            0 =>
+                array(
+                    'id' => '2468',
+                    'dimension' => 'mock_user_name',
+                    'value' => 'This is not a _real_ user name!',
+                ),
+            1 =>
+                array(
+                    'id' => '2468',
+                    'dimension' => 'mock_user_name',
+                    'value' => 'This is not a _real_ user name!',
+                ),
+        );
+        $this->assertSame($expected, $actual);
     }
 
 }
