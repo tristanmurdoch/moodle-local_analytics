@@ -25,10 +25,11 @@
  * @author David Bezemer <info@davidbezemer.nl>, Bas Brands <bmbrands@gmail.com>, Gavin Henrick <gavin@lts.ie>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once('AbstractLocalAnalytics.php');
-require_once('dimensions.php');
+namespace local_analytics\api;
 
-class local_analytics_piwik extends AbstractLocalAnalytics {
+//use local_analytics;
+
+class piwik extends AbstractLocalAnalytics {
     /**
      * Build a custom variable string.
      *
@@ -71,7 +72,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
     static public function insert_custom_moodle_variables() {
         global $DB, $PAGE, $COURSE, $SITE, $USER;
         $customvars = "";
-        $context = context_course::instance($COURSE->id);
+        $context = \context_course::instance($COURSE->id);
 
         // Option is visit/page
         // see http://piwik.org/docs/custom-variables/
@@ -233,7 +234,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
     static public function render_dimensions_for_visit_scope($dimensions) {
         // Scope is action. For now, just use trackPageView. @TODO: Use trackEvent too.
         $content = ['trackPageView', self::trackurl()];
-        $object = new stdClass();
+        $object = new \stdClass();
 
         foreach ($dimensions as $dimension) {
             $attrib = 'dimension' . $dimension['id'];

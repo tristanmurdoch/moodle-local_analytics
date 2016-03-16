@@ -30,7 +30,6 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once(__DIR__ . '/../dimensions.php');
 require_once($CFG->libdir . '/coursecatlib.php');
 
 

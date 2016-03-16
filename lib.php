@@ -27,10 +27,6 @@
  */
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/AbstractLocalAnalytics.php');
-require_once(dirname(__FILE__).'/piwik.php');
-require_once(dirname(__FILE__).'/ganalytics.php');
-require_once(dirname(__FILE__).'/guniversal.php');
 
 function local_analytics_execute() {
     $engine = NULL;
@@ -39,19 +35,14 @@ function local_analytics_execute() {
     $analytics = get_config('local_analytics', 'analytics');
 
     if ($enabled) {
-        if ($analytics === "piwik") {
-            $engine = new local_analytics_piwik();
-        } elseif ($analytics === "ganalytics") {
-            $engine = new local_analytics_ganalytics();
-        } elseif ($analytics === "guniversal") {
-            $engine = new local_analytics_guniversal();
-        } else {
+        $class_name = "\local_analytics\api\\" . $analytics;
+        if (!class_exists($class_name, TRUE)) {
             debugging("Local Analytics Module: Analytics setting '{$analytics}' doesn't map to a class name.");
+            return;
         }
 
-        if (!is_null($engine)) {
-            $engine::insert_tracking();
-        }
+        $engine = new $class_name;
+        $engine::insert_tracking();
     }
 }
 

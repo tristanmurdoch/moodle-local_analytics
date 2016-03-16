@@ -26,11 +26,9 @@
 
 namespace local_analytics;
 
-use local\analytics\dimensions\dimension_interface;
+use local_analytics\dimension;
 
 defined('MOODLE_INTERNAL') || die();
-
-require_once(__DIR__ . '/../dimensions.php');
 
 /**
  * Class local_analytics_dimensions_testcase

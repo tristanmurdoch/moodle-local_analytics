@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+namespace local_analytics;
 
 /**
  * Analytics tests.
@@ -76,7 +77,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $this->wiki = $this->getDataGenerator()->create_module('wiki', array('course' => $this->course->id));
 
         // Assign the guest role to the guest user in the course.
-        $context = context_course::instance($this->course->id);
+        $context = \context_course::instance($this->course->id);
         role_assign(6, 1, $context->id);
 
         // Set the location where output will be added.
@@ -108,7 +109,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
      * @test
      */
     public function shouldTrackReturnsTrueForSiteadminsWhenTrackAdminOn() {
-      $piwik = new local_analytics_piwik();
+      $piwik = new api\piwik();
       $actual = $piwik::shouldTrack();
 
       $this->assertTrue($actual);
@@ -129,7 +130,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
 
       set_config('trackadmin', FALSE, 'local_analytics');
 
-      $piwik = new local_analytics_piwik();
+      $piwik = new api\piwik();
       $actual = $piwik::shouldTrack();
 
       $this->assertFalse($actual);
@@ -149,7 +150,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
 
       $this->setGuestUser();
 
-      $piwik = new local_analytics_piwik();
+      $piwik = new api\piwik();
       $actual = $piwik::shouldTrack();
 
       $this->assertTrue($actual);
@@ -217,7 +218,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
      */
     public function userFullNameGivesRealUserNameIfNotMasquerading() {
 
-      $piwik = new local_analytics_piwik();
+      $piwik = new api\piwik();
       $actual = $piwik::userFullName();
       $this->assertEquals('Admin User', $actual);
     }
@@ -236,10 +237,10 @@ class local_analytics_types_testcase extends \advanced_testcase {
 
       set_config('masquerade_handling', FALSE, 'local_analytics');
 
-      $system_context = context_system::instance(0);
+      $system_context = \context_system::instance(0);
       \core\session\manager::loginas(1, $system_context);
 
-      $piwik = new local_analytics_piwik();
+      $piwik = new api\piwik();
       $actual = $piwik::userFullName();
       $this->assertEquals('Guest user  ', $actual);
     }
@@ -256,10 +257,10 @@ class local_analytics_types_testcase extends \advanced_testcase {
      */
     public function userFullNameGivesRealUserNameIfMasqueradeHandlingEnabled() {
 
-      $system_context = context_system::instance(0);
+      $system_context = \context_system::instance(0);
       \core\session\manager::loginas(1, $system_context);
 
-      $piwik = new local_analytics_piwik();
+      $piwik = new api\piwik();
       $actual = $piwik::userFullName();
       $this->assertEquals('Admin User', $actual);
     }
@@ -278,9 +279,9 @@ class local_analytics_types_testcase extends \advanced_testcase {
         global $CFG, $PAGE;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($this->course->id);
+        $PAGE->context = \context_course::instance($this->course->id);
 
-        $piwik = new local_analytics_piwik();
+        $piwik = new api\piwik();
         $trackurl = $piwik::trackurl();
 
         $this->assertEquals("Miscellaneous/Test course 1/View", $trackurl);
@@ -302,9 +303,9 @@ class local_analytics_types_testcase extends \advanced_testcase {
 
         $PAGE = new mock_page();
         $PAGE->set_editing(TRUE);
-        $PAGE->context = context_course::instance($this->course->id);
+        $PAGE->context = \context_course::instance($this->course->id);
 
-        $piwik = new local_analytics_piwik();
+        $piwik = new api\piwik();
         $trackurl = $piwik::trackurl();
 
         $this->assertEquals("Miscellaneous/Test course 1/Edit", $trackurl);
@@ -324,9 +325,9 @@ class local_analytics_types_testcase extends \advanced_testcase {
         global $CFG, $PAGE;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_module::instance($this->wiki->cmid);
+        $PAGE->context = \context_module::instance($this->wiki->cmid);
 
-        $piwik = new local_analytics_piwik();
+        $piwik = new api\piwik();
         $trackurl = $piwik::trackurl();
 
         $this->assertEquals("Miscellaneous/Test course 1/wiki/Wiki 1", $trackurl);
@@ -342,7 +343,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
      * @test
      */
     public function piwikCustomVariableStringGenerationProducesExpectedOutput() {
-        $piwik = new local_analytics_piwik();
+        $piwik = new api\piwik();
         $actual = $piwik::local_get_custom_var_string(987, 'name', 'value', 'context');
 
         $expected = '_paq.push(["setCustomVariable", 987, "name", "value", "page"]);';
@@ -365,9 +366,9 @@ class local_analytics_types_testcase extends \advanced_testcase {
         global $PAGE;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($this->course->id);
+        $PAGE->context = \context_course::instance($this->course->id);
 
-        $piwik = new local_analytics_piwik();
+        $piwik = new api\piwik();
         $actual = $piwik::local_insert_custom_moodle_vars();
 
         $expected = '_paq.push(["setCustomVariable", 1, "UserName", "Admin User", "page"]);' . "\n";
@@ -394,11 +395,11 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
 
         $this->setGuestUser();
 
-        $piwik = new local_analytics_piwik();
+        $piwik = new api\piwik();
         $actual = $piwik::local_insert_custom_moodle_vars();
 
         $expected = '_paq.push(["setCustomVariable", 1, "UserName", "Guest user  ", "page"]);' . "\n";
@@ -424,11 +425,11 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
 
         $USER = $DB->get_record('user', array('id' => 1));
 
-        $piwik = new local_analytics_piwik();
+        $piwik = new api\piwik();
         $piwik::insert_tracking();
 
         $actual = $CFG->additionalhtmlheader;
@@ -455,11 +456,11 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
 
         $USER = $DB->get_record('user', array('id' => 1));
 
-        $piwik = new local_analytics_piwik();
+        $piwik = new api\piwik();
         $piwik::insert_tracking();
 
         $actual = $CFG->additionalhtmlheader;
@@ -487,11 +488,11 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
 
         $USER = $DB->get_record('user', array('id' => 1));
 
-        $piwik = new local_analytics_piwik();
+        $piwik = new api\piwik();
         $piwik::insert_tracking();
 
         $actual = $CFG->additionalhtmlheader;
@@ -539,11 +540,11 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
 
         $USER = $DB->get_record('user', array('id' => 1));
 
-        $ga = new local_analytics_ganalytics();
+        $ga = new api\ganalytics();
         $actual = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("/Miscellaneous/Test+course+1/View", $actual);
@@ -569,12 +570,12 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
         $PAGE->set_editing(TRUE);
 
         $USER = $DB->get_record('user', array('id' => 1));
 
-        $ga = new local_analytics_ganalytics();
+        $ga = new api\ganalytics();
         $actual = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("/Miscellaneous/Test+course+1/Edit", $actual);
@@ -596,9 +597,9 @@ class local_analytics_types_testcase extends \advanced_testcase {
         set_config('analytics', 'ganalytics', 'local_analytics');
 
         $PAGE = new mock_page();
-        $PAGE->context = context_module::instance($this->wiki->cmid);
+        $PAGE->context = \context_module::instance($this->wiki->cmid);
 
-        $ga = new local_analytics_ganalytics();
+        $ga = new api\ganalytics();
         $trackurl = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("/Miscellaneous/Test+course+1/wiki/Wiki+1", $trackurl);
@@ -626,7 +627,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
 
         $USER = $DB->get_record('user', array('id' => 1));
 
@@ -659,7 +660,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
 
         $USER = $DB->get_record('user', array('id' => 1));
 
@@ -691,11 +692,11 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
 
         $USER = $DB->get_record('user', array('id' => 1));
 
-        $ga = new local_analytics_guniversal();
+        $ga = new api\guniversal();
         $actual = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("/Miscellaneous/Test+course+1/View", $actual);
@@ -721,12 +722,12 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
         $PAGE->set_editing(TRUE);
 
         $USER = $DB->get_record('user', array('id' => 1));
 
-        $ga = new local_analytics_guniversal();
+        $ga = new api\guniversal();
         $actual = $ga::trackurl(TRUE, TRUE);
 
         $this->assertEquals("/Miscellaneous/Test+course+1/Edit", $actual);
@@ -748,9 +749,9 @@ class local_analytics_types_testcase extends \advanced_testcase {
         set_config('analytics', 'guniversal', 'local_analytics');
 
         $PAGE = new mock_page();
-        $PAGE->context = context_module::instance($this->wiki->cmid);
+        $PAGE->context = \context_module::instance($this->wiki->cmid);
 
-        $guniversal = new local_analytics_guniversal();
+        $guniversal = new api\guniversal();
         $trackurl = $guniversal::trackurl(TRUE, TRUE);
 
         $this->assertEquals("/Miscellaneous/Test+course+1/wiki/Wiki+1", $trackurl);
@@ -806,7 +807,7 @@ class local_analytics_types_testcase extends \advanced_testcase {
         $COURSE = $this->course;
 
         $PAGE = new mock_page();
-        $PAGE->context = context_course::instance($COURSE->id);
+        $PAGE->context = \context_course::instance($COURSE->id);
 
         $USER = $DB->get_record('user', array('id' => 1));
 

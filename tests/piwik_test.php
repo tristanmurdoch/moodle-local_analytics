@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Piwik specific tests.
@@ -10,6 +9,8 @@
  * @author     Nigel Cunningham
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace local_analytics;
+
 class piwik_test extends \advanced_testcase {
 
     public function setUp()
@@ -52,7 +53,7 @@ class piwik_test extends \advanced_testcase {
      * @test
      */
     public function customDimensionStringFormattedAsExpected() {
-        $actual = \local_analytics_piwik::local_get_custom_dimension_string(13579, 'some_context_please', 'chocolate_fish');
+        $actual = api\piwik::local_get_custom_dimension_string(13579, 'some_context_please', 'chocolate_fish');
 
         $expected = '_paq.push(["setCustomDimension", customDimensionId = 13579, customDimensionValue = "chocolate_fish"]);' . "\n";
         $this->assertSame($expected, $actual);
@@ -68,7 +69,7 @@ class piwik_test extends \advanced_testcase {
      * @test
      */
     public function customDimensionValuesObtainedCorrectly() {
-        $actual = \local_analytics_piwik::get_dimension_values('visit', 1);
+        $actual = api\piwik::get_dimension_values('visit', 1);
 
         $expected = array(
             0 => '2468',
@@ -90,7 +91,7 @@ class piwik_test extends \advanced_testcase {
      * @test won't work. Requires testFnName due to assertDebuggingCalled
      */
     public function testCustomDimension() {
-        $actual = \local_analytics_piwik::get_dimension_values('visit', 10);
+        $actual = api\piwik::get_dimension_values('visit', 10);
 
         $this->assertDebuggingCalled("Local Analytics Piwik dimension action plugin #10 has been chosen but no
                         ID has been supplied.");
@@ -109,7 +110,7 @@ class piwik_test extends \advanced_testcase {
      * @test won't work. Requires testFnName due to assertDebuggingCalled
      */
     public function testCustomDimensionHandlesMissingPluginWithDebugMessage() {
-        $actual = \local_analytics_piwik::get_dimension_values('visit', 11);
+        $actual = api\piwik::get_dimension_values('visit', 11);
 
         $this->assertDebuggingCalled("Local Analytics Piwik Dimension Plugin 'missing_plugin' is missing.");
         $this->assertNull($actual);
@@ -127,7 +128,7 @@ class piwik_test extends \advanced_testcase {
      * @test won't work. Requires testFnName due to assertDebuggingNotCalled
      */
     public function testCustomDimensionHandlesNoValueSetAsExpected() {
-        $actual = \local_analytics_piwik::get_dimension_values('visit', 4);
+        $actual = api\piwik::get_dimension_values('visit', 4);
 
         $this->assertDebuggingNotCalled();
         $this->assertNull($actual);
@@ -145,7 +146,7 @@ class piwik_test extends \advanced_testcase {
      * @test
      */
     public function dimensionsForScopeHonoursNumberOfDimensionsSetting() {
-        $actual = \local_analytics_piwik::dimensions_for_scope('visit');
+        $actual = api\piwik::dimensions_for_scope('visit');
 
         $expected = array(
             0 =>
@@ -176,8 +177,8 @@ class piwik_test extends \advanced_testcase {
      * @test
      */
     public function outputOfRenderDimensionsForActionScopeAsExpected() {
-        $vars = \local_analytics_piwik::dimensions_for_scope('action');
-        $actual = \local_analytics_piwik::render_dimensions_for_action_scope($vars);
+        $vars = api\piwik::dimensions_for_scope('action');
+        $actual = api\piwik::render_dimensions_for_action_scope($vars);
 
         $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "PHPUnit test site"]);
 ';
@@ -194,8 +195,8 @@ class piwik_test extends \advanced_testcase {
      * @test
      */
     public function outputOfRenderDimensionsForVisitScopeAsExpected() {
-        $vars = \local_analytics_piwik::dimensions_for_scope('visit');
-        $actual = \local_analytics_piwik::render_dimensions_for_visit_scope($vars);
+        $vars = api\piwik::dimensions_for_scope('visit');
+        $actual = api\piwik::render_dimensions_for_visit_scope($vars);
 
         $expected = '_paq.push(["trackPageView","",{"dimension2468":"Foo Bar"}]);
 ';
@@ -212,7 +213,7 @@ class piwik_test extends \advanced_testcase {
      * @test
      */
     public function outputOfInsertCustomMoodleDimensionsWorksAsExpected() {
-        $actual = \local_analytics_piwik::insert_custom_moodle_dimensions();
+        $actual = api\piwik::insert_custom_moodle_dimensions();
         $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "PHPUnit test site"]);
 _paq.push(["trackPageView","",{"dimension2468":"Foo Bar"}]);
 ';
@@ -233,7 +234,7 @@ _paq.push(["trackPageView","",{"dimension2468":"Foo Bar"}]);
     public function localInsertCustomMoodleVarsHonoursPiwikusedimensions() {
 
         // First with dimensions enabled.
-        $actual = \local_analytics_piwik::local_insert_custom_moodle_vars();
+        $actual = api\piwik::local_insert_custom_moodle_vars();
         $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "PHPUnit test site"]);
 _paq.push(["trackPageView","",{"dimension2468":"Foo Bar"}]);
 ';
@@ -242,7 +243,7 @@ _paq.push(["trackPageView","",{"dimension2468":"Foo Bar"}]);
         // Then with them disabled.
         set_config('piwikusedimensions', FALSE, 'local_analytics');
 
-        $actual = \local_analytics_piwik::local_insert_custom_moodle_vars();
+        $actual = api\piwik::local_insert_custom_moodle_vars();
         $expected = '_paq.push(["setCustomVariable", 1, "UserName", "Foo Bar", "page"]);
 _paq.push(["setCustomVariable", 2, "UserRole", "", "page"]);
 _paq.push(["setCustomVariable", 3, "Context", "Front page", "page"]);

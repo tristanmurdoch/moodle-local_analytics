@@ -3,8 +3,7 @@
  * @file abstract_local_analytics.php
  * Abstract class for common functionality.
  */
-
-require_once(dirname(__FILE__) . '/local_analytics_interface.php');
+namespace local_analytics\api;
 
 /**
  * Abstract local analytics class.

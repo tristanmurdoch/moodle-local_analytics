@@ -23,7 +23,7 @@ class dimensions
      *   A list of the names of files containing plugins.
      */
     static public function enumerate_plugins() {
-        $dir = dirname(__FILE__) . '/classes/dimension';
+        $dir = dirname(__FILE__) . '/dimension';
 
         $list_of_files = scandir($dir);
         foreach ($list_of_files as $index => $entry) {

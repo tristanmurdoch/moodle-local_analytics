@@ -3,6 +3,7 @@
  * @file analytics_interface.php
  * Interface for analytics support.
  */
+namespace local_analytics\api;
 
 interface local_analytics_interface {
 
