@@ -26,8 +26,6 @@
 
 namespace local_analytics;
 
-use local\analytics\dimensions\dimension_interface;
-
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -61,6 +59,10 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
         $USER->email = 'noone@nowhere.null';
         $USER->firstname = 'Kevin';
         $USER->lastname = '11';
+        $USER->firstnamephonetic = 'Kevin';
+        $USER->lastnamephonetic = 'Eleven';
+        $USER->middlename = '';
+        $USER->alternatename = '';
         $USER->department = 'Null void';
         $USER->institution = 'Plumber Jail';
         $USER->profile['facultycostcode'] = 'Foo';
@@ -77,7 +79,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function contextPluginReturnsCourseContextName()
     {
-        $instance = new \local\analytics\dimensions\context();
+        $instance = new \local_analytics\dimension\context();
         $actual = $instance->value();
 
         $expected = "Front page";
@@ -98,7 +100,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $COURSE;
 
-        $instance = new \local\analytics\dimensions\course_category_hierarchy_full_path();
+        $instance = new \local_analytics\dimension\course_category_hierarchy_full_path();
         $actual = $instance->value();
 
         // Front page has no parents so result is False.
@@ -130,7 +132,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $USER, $COURSE, $DB;
 
-        $instance = new \local\analytics\dimensions\course_enrolment_method();
+        $instance = new \local_analytics\dimension\course_enrolment_method();
 
         // Front page - everyone is enrolled and method is False.
         $actual = $instance->value();
@@ -177,7 +179,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function courseFullNamePluginReturnsCourseFullName()
     {
-        $instance = new \local\analytics\dimensions\course_full_name();
+        $instance = new \local_analytics\dimension\course_full_name();
         $actual = $instance->value();
 
         $expected = "I'm a course";
@@ -195,7 +197,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function courseIdNumberPluginReturnsCourseIdNumber()
     {
-        $instance = new \local\analytics\dimensions\course_id_number();
+        $instance = new \local_analytics\dimension\course_id_number();
         $actual = $instance->value();
 
         $expected = "9642";
@@ -213,7 +215,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
      */
     public function courseShortNamePluginReturnsCourseShortName()
     {
-        $instance = new \local\analytics\dimensions\course_short_name();
+        $instance = new \local_analytics\dimension\course_short_name();
         $actual = $instance->value();
 
         $expected = "Hat on cat";
@@ -233,7 +235,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $CFG, $_SERVER;
 
-        $instance = new \local\analytics\dimensions\is_on_bundoora_campus();
+        $instance = new \local_analytics\dimension\is_on_bundoora_campus();
 
         unset($CFG->bundoora_campus_ips);
         $actual = $instance->value();
@@ -264,7 +266,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $CFG, $_SERVER;
 
-        $instance = new \local\analytics\dimensions\is_on_campus();
+        $instance = new \local_analytics\dimension\is_on_campus();
 
         unset($CFG->on_campus_ips);
         $actual = $instance->value();
@@ -305,7 +307,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $USER;
 
-        $instance = new \local\analytics\dimensions\user_department();
+        $instance = new \local_analytics\dimension\user_department();
         $actual = $instance->value();
 
         $expected = "Null void";
@@ -331,7 +333,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $USER;
 
-        $instance = new \local\analytics\dimensions\user_email_domain();
+        $instance = new \local_analytics\dimension\user_email_domain();
         $actual = $instance->value();
 
         $expected = "nowhere.null";
@@ -357,7 +359,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $USER;
 
-        $instance = new \local\analytics\dimensions\user_institution();
+        $instance = new \local_analytics\dimension\user_institution();
         $actual = $instance->value();
 
         $expected = "Plumber Jail";
@@ -383,7 +385,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $USER;
 
-        $instance = new \local\analytics\dimensions\user_name();
+        $instance = new \local_analytics\dimension\user_name();
         $actual = $instance->value();
 
         $expected = "Kevin 11";
@@ -421,7 +423,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $USER;
 
-        $instance = new \local\analytics\dimensions\user_profile_field_faculty_cost_code();
+        $instance = new \local_analytics\dimension\user_profile_field_faculty_cost_code();
         $actual = $instance->value();
 
         $expected = "Foo";
@@ -445,7 +447,7 @@ class local_analytics_dimensions_values_testcase extends \advanced_testcase
     {
         global $COURSE, $USER;
 
-        $instance = new \local\analytics\dimensions\user_role();
+        $instance = new \local_analytics\dimension\user_role();
         $actual = $instance->value();
 
         $expected = "Admin";

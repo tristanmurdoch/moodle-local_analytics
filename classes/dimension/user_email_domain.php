@@ -4,15 +4,15 @@
  * User name dimension definition.
  */
 
-namespace local\analytics\dimensions;
+namespace local_analytics\dimension;
 
-require_once dirname(__DIR__) . '/dimension_interface.php';
+require_once 'dimension_interface.php';
 
-class user_profile_field_faculty_cost_code implements dimension_interface {
+class user_email_domain implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */
-    static $name = 'user_profile_field_faculty_cost_code';
+    static $name = 'user_email_domain';
 
     /**
      * Scope of the dimension.
@@ -27,10 +27,13 @@ class user_profile_field_faculty_cost_code implements dimension_interface {
      */
     public function value() {
         global $USER;
-        if (!isset($USER->profile['facultycostcode'])) {
+
+        // Handle guest without error.
+        if (!isset($USER->email)) {
             return FALSE;
         }
 
-        return $USER->profile['facultycostcode'];
+        $parts = explode('@', $USER->email);
+        return $parts[1];
     }
 }

@@ -4,15 +4,15 @@
  * Course name dimension definition.
  */
 
-namespace local\analytics\dimensions;
+namespace local_analytics\dimension;
 
-require_once dirname(__DIR__) . '/../dimension_interface.php';
+require_once 'dimension_interface.php';
 
-class mock_course_full_name implements dimension_interface {
+class course_id_number implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */
-    static $name = 'mock_course_full_name';
+    static $name = 'course_id_number';
 
     /**
      * Scope of the dimension.
@@ -26,6 +26,8 @@ class mock_course_full_name implements dimension_interface {
      *   The value of the dimension.
      */
     public function value() {
-        return 'A mock course name.';
+        global $COURSE;
+
+        return $COURSE->idnumber;
     }
 }

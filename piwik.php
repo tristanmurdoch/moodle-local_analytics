@@ -149,7 +149,7 @@ class local_analytics_piwik extends AbstractLocalAnalytics {
             return null;
         }
 
-        $key = '\local\analytics\dimensions\\' . $dimension;
+        $key = '\local_analytics\dimension\\' . $dimension;
 
         if (!array_key_exists($key, $plugins[$scope])) {
             debugging("Local Analytics Piwik Dimension Plugin '${dimension}' is missing.", DEBUG_NORMAL);

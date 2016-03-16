@@ -1,18 +1,18 @@
 <?php
 /**
  * @file
- * Course name dimension definition.
+ * User name dimension definition.
  */
 
-namespace local\analytics\dimensions;
+namespace local_analytics\dimension;
 
-require_once dirname(__DIR__) . '/dimension_interface.php';
+require_once 'dimension_interface.php';
 
-class course_id_number implements dimension_interface {
+class context implements dimension_interface {
     /**
      * Name of dimension - used in lang plugin and arrays.
      */
-    static $name = 'course_id_number';
+    static $name = 'context';
 
     /**
      * Scope of the dimension.
@@ -28,6 +28,7 @@ class course_id_number implements dimension_interface {
     public function value() {
         global $COURSE;
 
-        return $COURSE->idnumber;
+        $context = \context_course::instance($COURSE->id);
+        return $context->get_context_name();
     }
 }

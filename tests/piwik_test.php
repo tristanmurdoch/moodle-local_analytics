@@ -14,29 +14,32 @@ class piwik_test extends \advanced_testcase {
 
     public function setUp()
     {
+        global $USER;
         $this->resetAfterTest();
-
-        // Prime the plugin cache with our mock plugin.
-        \local_analytics\dimensions::instantiate_plugin(__DIR__ . '/testdata/mock_user_name.php', '\local\analytics\dimensions\mock_user_name');
-        \local_analytics\dimensions::instantiate_plugin(__DIR__ . '/testdata/mock_course_full_name.php',
-            '\local\analytics\dimensions\mock_course_full_name');
 
         // Set up the settings.
         set_config('piwikusedimensions', TRUE, 'local_analytics');
 
         set_config('piwik_number_dimensions_visit', '5', 'local_analytics');
-        set_config('piwikdimensioncontent_visit_1', 'mock_user_name', 'local_analytics');
-        set_config('piwikdimensioncontent_visit_5', 'mock_user_name', 'local_analytics');
-        set_config('piwikdimensioncontent_visit_6', 'mock_user_name', 'local_analytics');
-        set_config('piwikdimensioncontent_visit_10', 'mock_user_name', 'local_analytics');
+        set_config('piwikdimensioncontent_visit_1', 'user_name', 'local_analytics');
+        set_config('piwikdimensioncontent_visit_5', 'user_name', 'local_analytics');
+        set_config('piwikdimensioncontent_visit_6', 'user_name', 'local_analytics');
+        set_config('piwikdimensioncontent_visit_10', 'user_name', 'local_analytics');
         set_config('piwikdimensioncontent_visit_11', 'missing_plugin', 'local_analytics');
         set_config('piwikdimensionid_visit_1', '2468', 'local_analytics');
         set_config('piwikdimensionid_visit_5', '2468', 'local_analytics');
         set_config('piwikdimensionid_visit_6', '2468', 'local_analytics');
 
         set_config('piwik_number_dimensions_action', '5', 'local_analytics');
-        set_config('piwikdimensioncontent_action_1', 'mock_course_full_name', 'local_analytics');
+        set_config('piwikdimensioncontent_action_1', 'course_full_name', 'local_analytics');
         set_config('piwikdimensionid_action_1', '1357', 'local_analytics');
+
+        $USER->firstname = 'Foo';
+        $USER->lastname = 'Bar';
+        $USER->firstnamephonetic = 'Foo';
+        $USER->lastnamephonetic = 'Bar';
+        $USER->middlename = '';
+        $USER->alternatename = '';
     }
 
     /**
@@ -69,8 +72,8 @@ class piwik_test extends \advanced_testcase {
 
         $expected = array(
             0 => '2468',
-            1 => 'mock_user_name',
-            2 => 'This is not a _real_ user name!',
+            1 => 'user_name',
+            2 => 'Foo Bar',
         );
         $this->assertSame($expected, $actual);
     }
@@ -148,14 +151,14 @@ class piwik_test extends \advanced_testcase {
             0 =>
                 array(
                     'id' => '2468',
-                    'dimension' => 'mock_user_name',
-                    'value' => 'This is not a _real_ user name!',
+                    'dimension' => 'user_name',
+                    'value' => 'Foo Bar',
                 ),
             1 =>
                 array(
                     'id' => '2468',
-                    'dimension' => 'mock_user_name',
-                    'value' => 'This is not a _real_ user name!',
+                    'dimension' => 'user_name',
+                    'value' => 'Foo Bar',
                 ),
         );
         $this->assertSame($expected, $actual);
@@ -176,7 +179,7 @@ class piwik_test extends \advanced_testcase {
         $vars = \local_analytics_piwik::dimensions_for_scope('action');
         $actual = \local_analytics_piwik::render_dimensions_for_action_scope($vars);
 
-        $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "A mock course name."]);
+        $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "PHPUnit test site"]);
 ';
         $this->assertSame($expected, $actual);
     }
@@ -194,7 +197,7 @@ class piwik_test extends \advanced_testcase {
         $vars = \local_analytics_piwik::dimensions_for_scope('visit');
         $actual = \local_analytics_piwik::render_dimensions_for_visit_scope($vars);
 
-        $expected = '_paq.push(["trackPageView","",{"dimension2468":"This is not a _real_ user name!"}]);
+        $expected = '_paq.push(["trackPageView","",{"dimension2468":"Foo Bar"}]);
 ';
         $this->assertSame($expected, $actual);
     }
@@ -210,8 +213,8 @@ class piwik_test extends \advanced_testcase {
      */
     public function outputOfInsertCustomMoodleDimensionsWorksAsExpected() {
         $actual = \local_analytics_piwik::insert_custom_moodle_dimensions();
-        $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "A mock course name."]);
-_paq.push(["trackPageView","",{"dimension2468":"This is not a _real_ user name!"}]);
+        $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "PHPUnit test site"]);
+_paq.push(["trackPageView","",{"dimension2468":"Foo Bar"}]);
 ';
         $this->assertSame($expected, $actual);
     }
@@ -231,8 +234,8 @@ _paq.push(["trackPageView","",{"dimension2468":"This is not a _real_ user name!"
 
         // First with dimensions enabled.
         $actual = \local_analytics_piwik::local_insert_custom_moodle_vars();
-        $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "A mock course name."]);
-_paq.push(["trackPageView","",{"dimension2468":"This is not a _real_ user name!"}]);
+        $expected = '_paq.push(["setCustomDimension", customDimensionId = 1357, customDimensionValue = "PHPUnit test site"]);
+_paq.push(["trackPageView","",{"dimension2468":"Foo Bar"}]);
 ';
         $this->assertSame($expected, $actual);
 
@@ -240,7 +243,7 @@ _paq.push(["trackPageView","",{"dimension2468":"This is not a _real_ user name!"
         set_config('piwikusedimensions', FALSE, 'local_analytics');
 
         $actual = \local_analytics_piwik::local_insert_custom_moodle_vars();
-        $expected = '_paq.push(["setCustomVariable", 1, "UserName", "", "page"]);
+        $expected = '_paq.push(["setCustomVariable", 1, "UserName", "Foo Bar", "page"]);
 _paq.push(["setCustomVariable", 2, "UserRole", "", "page"]);
 _paq.push(["setCustomVariable", 3, "Context", "Front page", "page"]);
 _paq.push(["setCustomVariable", 4, "CourseName", "PHPUnit test site", "page"]);

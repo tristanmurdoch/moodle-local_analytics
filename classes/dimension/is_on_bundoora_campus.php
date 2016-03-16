@@ -4,9 +4,9 @@
  * Course name dimension definition.
  */
 
-namespace local\analytics\dimensions;
+namespace local_analytics\dimension;
 
-require_once dirname(__DIR__) . '/dimension_interface.php';
+require_once 'dimension_interface.php';
 
 class is_on_bundoora_campus implements dimension_interface {
     /**

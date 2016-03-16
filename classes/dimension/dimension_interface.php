@@ -4,7 +4,7 @@
  * User name dimension definition.
  */
 
-namespace local\analytics\dimensions;
+namespace local_analytics\dimension;
 
 interface dimension_interface {
 

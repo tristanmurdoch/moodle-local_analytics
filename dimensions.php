@@ -14,17 +14,20 @@ class dimensions
     static private $dimension_instances = null;
 
     /**
-     * Find class instances and populate the array
+     * Find class instances and populate the array.
+     *
+     * Moodle core 3.0 and lower don't have a way to find all the classes automagically :(
+     * See MDL-46155.
      *
      * @return array of strings
      *   A list of the names of files containing plugins.
      */
     static public function enumerate_plugins() {
-        $dir = dirname(__FILE__) . '/dimensions';
+        $dir = dirname(__FILE__) . '/classes/dimension';
 
         $list_of_files = scandir($dir);
         foreach ($list_of_files as $index => $entry) {
-            if ($entry == '.' || $entry == '..' || substr($entry, -4) != '.php') {
+            if ($entry == '.' || $entry == '..' || substr($entry, -4) != '.php' || $entry == 'dimension_interface.php') {
                 unset($list_of_files[$index]);
             }
         }
@@ -35,20 +38,10 @@ class dimensions
     /**
      * Instantiate a single plugin and add it to the class level cache.
      *
-     * @param string $file
-     *   The name of the file to require.
      * @param string $class_name
      *   The name of the class that should be defined by the file.
      */
-    static public function instantiate_plugin($file, $class_name) {
-        require_once($file);
-
-        // Check the expected class exists.
-        if (!class_exists($class_name, false)) {
-            debugging("Local Analytics: File ${file} doesn't define a class named ${class_name}",
-                DEBUG_DEVELOPER);
-            return;
-        }
+    static public function instantiate_plugin($class_name) {
 
         $instance = new $class_name;
         $scope = $instance::$scope;
@@ -75,10 +68,9 @@ class dimensions
             self::$dimension_instances = array();
 
             foreach ($list_of_files as $index => $entry) {
-                $filename = __DIR__ . '/dimensions/' . $entry;
-                $class_name = '\local\analytics\dimensions\\' . substr($entry, 0, -4);
+                $class_name = '\local_analytics\dimension\\' . substr($entry, 0, -4);
 
-                self::instantiate_plugin($filename, $class_name);
+                self::instantiate_plugin($class_name);
             }
 
         }
