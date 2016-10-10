@@ -28,15 +28,22 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
-$enabled = get_config('local_analytics', 'enabled');
-$analytics = get_config('local_analytics', 'analytics');
+function local_analytics_execute() {
+    $engine = NULL;
 
-if ($enabled) {
-    if ($analytics === "piwik") {
-        require_once(dirname(__FILE__).'/piwik.php');
-    } elseif ($analytics === "ganalytics") {
-        require_once(dirname(__FILE__).'/ganalytics.php');
-    } elseif ($analytics === "guniversal") {
-        require_once(dirname(__FILE__).'/guniversal.php');
+    $enabled = get_config('local_analytics', 'enabled');
+    $analytics = get_config('local_analytics', 'analytics');
+
+    if ($enabled) {
+        $class_name = "\local_analytics\api\\" . $analytics;
+        if (!class_exists($class_name, TRUE)) {
+            debugging("Local Analytics Module: Analytics setting '{$analytics}' doesn't map to a class name.");
+            return;
+        }
+
+        $engine = new $class_name;
+        $engine::insert_tracking();
     }
 }
+
+local_analytics_execute();
