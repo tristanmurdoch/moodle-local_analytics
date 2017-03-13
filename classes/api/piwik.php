@@ -48,8 +48,7 @@ class piwik extends analytics {
         $template->userid = $USER->id;
         $cleanurl = get_config('local_analytics', 'cleanurl');
 
-        if (!empty($siteurl)) {
-
+        if (!empty($template->siteurl)) {
             if ($cleanurl) {
                 $template->doctitle = "_paq.push(['setDocumentTitle', '".self::trackurl()."']);\n";
             } else {
