@@ -3,10 +3,17 @@ moodle-local_analytics
 
 Release notes:
 
+version: 2017031300
+
+- Updated to work with Moodle versions 3.0, 3.1 and 3.2
+
+The configuration option to push the JS into the header or footer has been removed.
+Tracking codes moved to mustache templates
+Implemented the trick to push the JS code into each page by Daniel Thee Roperto from Catalyst.
+
 version: 2015012200
 
 - Removed the debugging URL display on the page, If debugging is required use your browsers view source feature.
-
 
 A local Moodle Module adding Site Analytics
 
