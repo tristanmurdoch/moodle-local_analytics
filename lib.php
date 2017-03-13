@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of the Local Analytics plugin for Moodle
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,22 +21,58 @@
  * Currently support Google Analytics and Piwik
  *
  * @package    local_analytics
- * @copyright  David Bezemer <info@davidbezemer.nl>, www.davidbezemer.nl
- * @author     David Bezemer <info@davidbezemer.nl>
+ * @copyright  Bas Brands, Sonsbeekmedia 2017
+ * @author     Bas Brands <bas@sonsbeekmedia.nl>, David Bezemer <info@davidbezemer.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
-$enabled = get_config('local_analytics', 'enabled');
-$analytics = get_config('local_analytics', 'analytics');
+use local_analytics\injector;
 
-if ($enabled) {
-    if ($analytics === "piwik") {
-        require_once(dirname(__FILE__).'/piwik.php');
-    } elseif ($analytics === "ganalytics") {
-        require_once(dirname(__FILE__).'/ganalytics.php');
-    } elseif ($analytics === "guniversal") {
-        require_once(dirname(__FILE__).'/guniversal.php');
-    }
+require_once(__DIR__.'/../../config.php');
+
+
+/**
+ * Used since Moodle 29.
+ */
+function local_analytics_extend_navigation() {
+    injector::inject();
+}
+
+/**
+ * Used since Moodle 29.
+ */
+function local_analytics_extend_settings_navigation() {
+    injector::inject();
+}
+
+/**
+ * Used in Moodle 30+ when a user is logged on.
+ */
+function local_analytics_extend_navigation_user_settings() {
+    injector::inject();
+}
+
+/**
+ * Used in Moodle 30+ on the frontpage.
+ */
+function local_analytics_extend_navigation_frontpage() {
+    injector::inject();
+}
+
+/**
+ * Used in Moodle 31+ when a user is logged on.
+ */
+function local_analytics_extend_navigation_user() {
+    injector::inject();
+}
+
+/**
+ * Proposed in MDL-53978.
+ *
+ * We are not using all callbacks provided there because the one below would cover all cases.
+ * If approved, this would be the only needed callback, the others would provide legacy support.
+ */
+function tool_callbacktest_before_http_headers() {
+    injector::inject();
 }

@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of the Local Analytics plugin for Moodle
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,12 +21,14 @@
  * Currently support Google Analytics and Piwik
  *
  * @package    local_analytics
- * @copyright  David Bezemer <info@davidbezemer.nl>, www.davidbezemer.nl
- * @author     David Bezemer <info@davidbezemer.nl>
+ * @copyright  Bas Brands, Sonsbeekmedia 2017
+ * @author     Bas Brands <bas@sonsbeekmedia.nl>, David Bezemer <info@davidbezemer.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version  = 2015012200;
+defined('MOODLE_INTERNAL') || die;
+
+$plugin->version  = 2017031300;
 $plugin->requires = 2011033010;
 $plugin->release = '1.5 (Build: 2014100801)';
 $plugin->maturity = MATURITY_STABLE;

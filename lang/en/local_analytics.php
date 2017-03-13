@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of the Local Analytics plugin for Moodle
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Piwik Analytics
+ * Analytics
  *
- * This module provides extensive analytics, without the privacy concerns
- * of using Google Analytics, see install_piwik.txt for installing Piwik
+ * This module provides extensive analytics on a platform of choice
+ * Currently support Google Analytics and Piwik
  *
  * @package    local_analytics
- * @copyright  2013 David Bezemer, www.davidbezemer.nl
- * @author     David Bezemer
+ * @copyright  Bas Brands, Sonsbeekmedia 2017
+ * @author     Bas Brands <bas@sonsbeekmedia.nl>, David Bezemer <info@davidbezemer.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- 
+
 $string['pluginname'] = 'Analytics';
 $string['analytics'] = 'Analytics';
 $string['analyticsdesc'] = 'Choose the type of Analytics you want to insert';

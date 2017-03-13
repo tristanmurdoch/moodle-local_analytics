@@ -1,5 +1,5 @@
 <?php
-// This file is part of the Local Analytics plugin for Moodle
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,8 +26,32 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
+namespace local_analytics\api;
 
-require_login();
+use stdClass;
 
-require_once(dirname(__FILE__).'/lib.php');
+defined('MOODLE_INTERNAL') || die();
+
+class guniversal extends analytics {
+    public static function insert_tracking() {
+        global $CFG, $PAGE, $OUTPUT;
+
+        $template = new stdClass();
+
+        $template->siteid = get_config('local_analytics', 'siteid');
+        $cleanurl = get_config('local_analytics', 'cleanurl');
+
+        if ($cleanurl) {
+            $template->addition = "{'hitType' : 'pageview',
+                'page' : '".self::trackurl(true, true)."',
+                'title' : '".addslashes($PAGE->heading)."'
+                }";
+        } else {
+            $template->addition = "'pageview'";
+        }
+
+        if (self::should_track()) {
+            $script = $OUTPUT->render_from_template('local_analytics/guniversal', $template);
+        }
+    }
+}

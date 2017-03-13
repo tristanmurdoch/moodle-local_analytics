@@ -25,9 +25,25 @@
  * @author     Bas Brands <bas@sonsbeekmedia.nl>, David Bezemer <info@davidbezemer.nl>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+namespace local_analytics\api;
 
-require_once('../../config.php');
+use stdClass;
 
-require_login();
+defined('MOODLE_INTERNAL') || die();
 
-require_once(dirname(__FILE__).'/lib.php');
+class ganalytics extends analytics {
+    public static function insert_tracking() {
+        global $CFG;
+
+        $template = new stdClass();
+        $template->siteid = get_config('local_analytics', 'siteid');
+        $cleanurl = get_config('local_analytics', 'cleanurl');
+
+        if (self::should_track()) {
+            if ($cleanurl) {
+                $template->page = self::trackurl(true, true);
+            }
+            $script = $OUTPUT->render_from_template('local_analytics/ganalytics', $template);
+        }
+    }
+}
