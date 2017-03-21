@@ -45,7 +45,7 @@ abstract class analytics {
      */
     private static function might_encode($input, $encode) {
         if (!$encode) {
-            return $input;
+            return str_replace("'", "\'", $input);
         }
 
         return urlencode($input);
