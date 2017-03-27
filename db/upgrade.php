@@ -50,7 +50,7 @@ function xmldb_local_analytics_upgrade($oldversion) {
                 $DB->insert_record('config_plugins', $newsetting);
             }
         }
-        
+
         if ($setting->value == 'ganalytics' || $setting->value == 'guniversal' ) {
             if ($siteid = $DB->get_record('config_plugins', array('plugin' => 'local_analytics', 'name' => 'siteid'))) {
                 $newsetting = new stdClass();
@@ -63,7 +63,7 @@ function xmldb_local_analytics_upgrade($oldversion) {
             $newsetting = new stdClass();
             $newsetting->plugin = 'local_analytics';
             $newsetting->name = 'analyticsid';
-            $newsetting->value = '';
+            $newsetting->value = 0;
             $DB->insert_record('config_plugins', $newsetting);
         }
 
