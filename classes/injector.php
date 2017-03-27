@@ -46,18 +46,21 @@ class injector {
 
         $engine = null;
 
-        $enabled = get_config('local_analytics', 'enabled');
         $analytics = get_config('local_analytics', 'analytics');
+        $analyticstypes = array('guniversal', 'ganalytics', 'piwik');
+        
+        foreach ($analyticstypes as $type) {
+            $enabled = get_config('local_analytics', $type);
+            if ($enabled) {
+                $classname = "\\local_analytics\\api\\{$type}";
+                if (!class_exists($classname, true)) {
+                    debugging("Local Analytics Module: Analytics setting '{$type}' doesn't map to a class name.");
+                    return;
+                }
 
-        if ($enabled) {
-            $classname = "\\local_analytics\\api\\{$analytics}";
-            if (!class_exists($classname, true)) {
-                debugging("Local Analytics Module: Analytics setting '{$analytics}' doesn't map to a class name.");
-                return;
+                $engine = new $classname;
+                $engine::insert_tracking();
             }
-
-            $engine = new $classname;
-            $engine::insert_tracking();
         }
     }
 

@@ -39,19 +39,32 @@ if (is_siteadmin()) {
     $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
     $settings->add($setting);
 
-    $name = 'local_analytics/analytics';
-    $title = get_string('analytics' , 'local_analytics');
-    $description = get_string('analyticsdesc', 'local_analytics');
-    $ganalytics = get_string('ganalytics', 'local_analytics');
-    $guniversal = get_string('guniversal', 'local_analytics');
-    $piwik = get_string('piwik', 'local_analytics');
-    $default = 'piwik';
-    $choices = array(
-        'piwik' => $piwik,
-        'ganalytics' => $ganalytics,
-        'guniversal' => $guniversal,
-    );
-    $setting = new admin_setting_configselect($name, $title, $description, $default, $choices);
+    $name = 'local_analytics/guniversal';
+    $title = get_string('guniversal', 'local_analytics');
+    $description = get_string('guniversaldesc', 'local_analytics');
+    $default = '1';
+    $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+    $settings->add($setting);
+
+    $name = 'local_analytics/ganalytics';
+    $title = get_string('ganalytics', 'local_analytics');
+    $description = get_string('ganalyticsdesc', 'local_analytics');
+    $default = '0';
+    $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
+    $settings->add($setting);
+
+    $name = 'local_analytics/analyticsid';
+    $title = get_string('analyticsid', 'local_analytics');
+    $description = get_string('analyticsid_desc', 'local_analytics');
+    $default = '';
+    $setting = new admin_setting_configtext($name, $title, $description, $default);
+    $settings->add($setting);
+
+    $name = 'local_analytics/piwik';
+    $title = get_string('piwik', 'local_analytics');
+    $description = get_string('piwikdesc', 'local_analytics');
+    $default = '1';
+    $setting = new admin_setting_configcheckbox($name, $title, $description, $default, true, false);
     $settings->add($setting);
 
     $name = 'local_analytics/siteid';

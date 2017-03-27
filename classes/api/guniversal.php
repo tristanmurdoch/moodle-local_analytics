@@ -38,7 +38,7 @@ class guniversal extends analytics {
 
         $template = new stdClass();
 
-        $template->siteid = get_config('local_analytics', 'siteid');
+        $template->analyticsid = get_config('local_analytics', 'analyticsid');
         $cleanurl = get_config('local_analytics', 'cleanurl');
 
         if ($cleanurl) {

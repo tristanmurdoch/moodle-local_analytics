@@ -36,7 +36,7 @@ class ganalytics extends analytics {
         global $CFG;
 
         $template = new stdClass();
-        $template->siteid = get_config('local_analytics', 'siteid');
+        $template->analyticsid = get_config('local_analytics', 'analyticsid');
         $cleanurl = get_config('local_analytics', 'cleanurl');
 
         if (self::should_track()) {
