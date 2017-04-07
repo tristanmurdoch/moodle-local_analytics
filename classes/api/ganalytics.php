@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die();
 
 class ganalytics extends analytics {
     public static function insert_tracking() {
-        global $CFG;
+        global $CFG, $OUTPUT;
 
         $template = new stdClass();
         $template->analyticsid = get_config('local_analytics', 'analyticsid');
