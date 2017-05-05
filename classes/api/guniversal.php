@@ -44,7 +44,7 @@ class guniversal extends analytics {
         if ($cleanurl) {
             $template->addition = "{'hitType' : 'pageview',
                 'page' : '".self::trackurl(true, true)."',
-                'title' : '".addslashes($PAGE->heading)."'
+                'title' : '".addslashes(format_string($PAGE->heading))."'
                 }";
         } else {
             $template->addition = "'pageview'";
